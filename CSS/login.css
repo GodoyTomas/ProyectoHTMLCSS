@@ -5,8 +5,10 @@
 }
 
 body{
+    font-family: 'Times New Roman', Times, serif;
     height: 100%;
-    background-color: rgba(138, 138, 138, 0.472);
+    display: flex;
+    background-color: rgba(107, 96, 96, 0.472);
 }
 
 .container{
@@ -20,12 +22,13 @@ body{
 .container-lg{
     display: flex;
     width: 700px;
+    border-radius: 999rem;
     height: auto;
     background-color: transparent;
 }
 
 .login{
-    width: 400px;
+    width: 300px;
     height: 500px;
     background-color: white;
     color: black;
