@@ -1,2 +1,0 @@
-# ProyectoHTMLCSS
-Proyecto para practicar
