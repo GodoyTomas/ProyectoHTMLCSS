@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Empleos Universitario</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="navbar">
+        <h1>UniEmpleos</h1>
+        <p>Pasantías y primer empleo para estudiantes universitarios</p>
+    </header>
+
+    <main class="contenedor">
+        <!-- Barra de filtros -->
+        <section class="filtros">
+            <input type="text" id="filtroCarrera" placeholder="Filtrar por carrera (ej. Ingeniería Informática)...">
+            <select id="filtroModalidad">
+                <option value="">Todas las modalidades</option>
+                <option value="Presencial">Presencial</option>
+                <option value="Híbrido">Híbrido</option>
+                <option value="Remoto">Remoto</option>
+            </select>
+            <button id="btnBuscar">Filtrar</button>
+        </section>
+
+        <!-- Listado dinámico de ofertas -->
+        <section id="contenedorOfertas" class="grid-ofertas">
+            <!-- Las tarjetas se inyectan desde app.js -->
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
