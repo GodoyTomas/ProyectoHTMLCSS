@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ofertas Laborales y Pasantías - UniEmpleos</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .nav-links { margin-top: 1rem; display: flex; justify-content: center; gap: 0.8rem; flex-wrap: wrap; }
+        .btn-nav {
+            display: inline-block; background: #2563eb; color: #fff;
+            padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; font-weight: 600; border: none; cursor: pointer; font-size: 0.9rem;
+        }
+        .btn-nav:hover { background: #1d4ed8; }
+        .btn-secundario { background: #0f172a; }
+        .btn-secundario:hover { background: #334155; }
+        .btn-verde { background: #16a34a; }
+        .btn-verde:hover { background: #15803d; }
+
+        .barra-filtros {
+            background: #fff; padding: 1.2rem; border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06); margin-bottom: 2rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem;
+        }
+        .barra-filtros input, .barra-filtros select {
+            padding: 0.7rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem;
+        }
+
+        .card-oferta {
+            background: #fff; border-radius: 10px; padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07); border-left: 4px solid #2563eb;
+            display: flex; flex-direction: column; gap: 0.8rem;
+        }
+        .card-oferta h3 { color: #0f172a; margin: 0; font-size: 1.15rem; }
+        .empresa-info { font-size: 0.9rem; color: #475569; font-weight: 600; }
+        .badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .badge {
+            background: #e2e8f0; color: #1e293b; padding: 0.25rem 0.6rem;
+            border-radius: 4px; font-size: 0.8rem; font-weight: 600;
+        }
+        .badge-carrera { background: #dbeafe; color: #1e40af; }
+        
+        .acciones-oferta {
+            display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: auto; padding-top: 0.8rem; border-top: 1px solid #e2e8f0;
+        }
+        .btn-postular {
+            flex: 1; background: #2563eb; color: #fff; border: none; padding: 0.55rem 0.8rem;
+            border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.82rem;
+        }
+        .btn-postular:hover { background: #1d4ed8; }
+        .btn-ver-postulantes {
+            flex: 1; background: #0f172a; color: #fff; border: none; padding: 0.55rem 0.8rem;
+            border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.82rem;
+        }
+        .btn-ver-postulantes:hover { background: #334155; }
+        .btn-eliminar {
+            background: #fee2e2; color: #991b1b; border: none; padding: 0.55rem 0.8rem;
+            border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.82rem;
+        }
+
+        /* Modales */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background: #fff; padding: 1.8rem; border-radius: 10px; width: 90%; max-width: 550px;
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal-wide { max-width: 700px; }
+        .form-group { margin-bottom: 0.85rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 0.6rem; border: 1px solid #cbd5e1; border-radius: 6px;
+        }
+        .modal-botones { display: flex; gap: 0.8rem; margin-top: 1rem; }
+        .btn-guardar { flex: 1; background: #2563eb; color: #fff; border: none; padding: 0.7rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-cancelar { flex: 1; background: #e2e8f0; color: #334155; border: none; padding: 0.7rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+
+        /* Lista de postulantes dentro del modal */
+        .item-postulante {
+            display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+            padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.8rem; flex-wrap: wrap;
+        }
+        .postulante-info { display: flex; align-items: center; gap: 0.8rem; }
+        .postulante-foto { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #2563eb; }
+        .postulante-links a {
+            display: inline-block; margin-right: 0.5rem; font-size: 0.8rem; color: #2563eb; font-weight: 600; text-decoration: none;
+        }
+        .select-estado {
+            padding: 0.4rem; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 600; font-size: 0.82rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <h1>Cartelera de Ofertas y Pasantías</h1>
+        <p>Oportunidades laborales para estudiantes universitarios</p>
+        <div class="nav-links">
+            <a href="index.html" class="btn-nav btn-secundario">👥 Ver Talentos (Estudiantes)</a>
+            <button class="btn-nav" onclick="abrirModal('modalEmpresa')">🏢 + Registrar Empresa</button>
+            <button class="btn-nav btn-verde" onclick="abrirModalOferta()">📢 + Publicar Oferta</button>
+        </div>
+    </header>
+
+    <main class="contenedor">
+        <!-- Filtros -->
+        <section class="barra-filtros">
+            <input type="text" id="filtroCarrera" placeholder="🎓 Filtrar por carrera (ej. Informática)...">
+            <select id="filtroModalidad">
+                <option value="">📍 Todas las modalidades</option>
+                <option value="Presencial">Presencial</option>
+                <option value="Híbrido">Híbrido</option>
+                <option value="Remoto">Remoto</option>
+            </select>
+            <select id="filtroTipo">
+                <option value="">⏱️ Todos los tipos de puesto</option>
+                <option value="Pasantía">Pasantía</option>
+                <option value="Part-Time">Part-Time</option>
+                <option value="Full-Time">Full-Time</option>
+            </select>
+        </section>
+
+        <h2 style="margin-bottom: 1.5rem;">Ofertas Disponibles (<span id="contadorOfertas">0</span>)</h2>
+        <section id="contenedorOfertas" class="grid-ofertas">
+            <p>Cargando ofertas...</p>
+        </section>
+    </main>
+
+    <!-- Modal 1: Registrar Empresa -->
+    <div id="modalEmpresa" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 1rem;">Registrar Nueva Empresa</h3>
+            <form id="formEmpresa">
+                <div class="form-group">
+                    <label>Razón Social / Nombre de la Empresa *</label>
+                    <input type="text" id="emp_razon" required>
+                </div>
+                <div class="form-group">
+                    <label>CUIT *</label>
+                    <input type="text" id="emp_cuit" placeholder="Ej. 30-12345678-9" required>
+                </div>
+                <div class="form-group">
+                    <label>Email de Contacto (RRHH) *</label>
+                    <input type="email" id="emp_email" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" id="emp_telefono">
+                </div>
+                <div class="form-group">
+                    <label>Rubro / Sector</label>
+                    <input type="text" id="emp_rubro" placeholder="Ej. Desarrollo de Software, Contabilidad...">
+                </div>
+                <div class="form-group">
+                    <label>Ubicación</label>
+                    <input type="text" id="emp_ubicacion" placeholder="Ej. Posadas, Misiones">
+                </div>
+                <div class="modal-botones">
+                    <button type="submit" class="btn-guardar">Guardar Empresa</button>
+                    <button type="button" class="btn-cancelar" onclick="cerrarModal('modalEmpresa')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Publicar Oferta -->
+    <div id="modalOferta" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 1rem;">Publicar Nueva Oferta Laboral</h3>
+            <form id="formOferta">
+                <div class="form-group">
+                    <label>Empresa *</label>
+                    <select id="of_empresa" required>
+                        <option value="">Seleccione una empresa...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Título del Puesto *</label>
+                    <input type="text" id="of_titulo" placeholder="Ej. Desarrollador Web Jr / Pasante" required>
+                </div>
+                <div class="form-group">
+                    <label>Carrera Objetivo *</label>
+                    <input type="text" id="of_carrera" placeholder="Ej. Ingeniería Informática" required>
+                </div>
+                <div class="form-group">
+                    <label>Modalidad *</label>
+                    <select id="of_modalidad" required>
+                        <option value="Presencial">Presencial</option>
+                        <option value="Híbrido">Híbrido</option>
+                        <option value="Remoto">Remoto</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Puesto *</label>
+                    <select id="of_tipo" required>
+                        <option value="Pasantía">Pasantía</option>
+                        <option value="Part-Time">Part-Time</option>
+                        <option value="Full-Time">Full-Time</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descripción y Requisitos *</label>
+                    <textarea id="of_descripcion" rows="4" required></textarea>
+                </div>
+                <div class="modal-botones">
+                    <button type="submit" class="btn-guardar">Publicar Oferta</button>
+                    <button type="button" class="btn-cancelar" onclick="cerrarModal('modalOferta')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 3: Postular Estudiante a Oferta -->
+    <div id="modalPostular" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 0.5rem;">Postularse a la Oferta</h3>
+            <p id="postularTituloOferta" style="color: #475569; font-weight: 600; margin-bottom: 1rem;"></p>
+            <form id="formPostular">
+                <input type="hidden" id="post_id_oferta">
+                <div class="form-group">
+                    <label>Seleccioná tu Perfil de Estudiante *</label>
+                    <select id="post_id_estudiante" required>
+                        <option value="">Seleccione un estudiante...</option>
+                    </select>
+                </div>
+                <div class="modal-botones">
+                    <button type="submit" class="btn-guardar">Confirmar Postulación</button>
+                    <button type="button" class="btn-cancelar" onclick="cerrarModal('modalPostular')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 4: Ver Postulantes de una Oferta -->
+    <div id="modalVerPostulantes" class="modal-overlay">
+        <div class="modal-content modal-wide">
+            <h3 style="margin-bottom: 0.4rem;">Candidatos Postulados</h3>
+            <p id="verPostulantesTitulo" style="color: #475569; font-weight: 600; margin-bottom: 1.2rem;"></p>
+            <div id="listaPostulantesContainer">
+                <p>Cargando candidatos...</p>
+            </div>
+            <div class="modal-botones">
+                <button type="button" class="btn-cancelar" onclick="cerrarModal('modalVerPostulantes')">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const filtroCarrera = document.getElementById('filtroCarrera');
+        const filtroModalidad = document.getElementById('filtroModalidad');
+        const filtroTipo = document.getElementById('filtroTipo');
+        const contadorOfertas = document.getElementById('contadorOfertas');
+
+        function abrirModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+        function cerrarModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        async function abrirModalOferta() {
+            const selectEmpresa = document.getElementById('of_empresa');
+            const res = await fetch('/api/empresas');
+            const empresas = await res.json();
+
+            if (empresas.length === 0) {
+                alert('Primero tenés que registrar al menos una empresa haciendo clic en "+ Registrar Empresa".');
+                return;
+            }
+
+            selectEmpresa.innerHTML = '<option value="">Seleccione una empresa...</option>';
+            empresas.forEach(emp => {
+                selectEmpresa.innerHTML += `<option value="${emp.id_empresa}">${emp.razon_social} (${emp.cuit})</option>`;
+            });
+
+            abrirModal('modalOferta');
+        }
+
+        // Abrir modal para elegir qué estudiante se postula
+        async function abrirModalPostular(idOferta, tituloOferta) {
+            const res = await fetch('/api/estudiantes');
+            const estudiantes = await res.json();
+
+            if (estudiantes.length === 0) {
+                alert('No hay estudiantes registrados todavía. Cargá primero un perfil en la sección de Talentos.');
+                return;
+            }
+
+            document.getElementById('post_id_oferta').value = idOferta;
+            document.getElementById('postularTituloOferta').textContent = `Puesto: ${tituloOferta}`;
+
+            const selectEst = document.getElementById('post_id_estudiante');
+            selectEst.innerHTML = '<option value="">Seleccione un estudiante...</option>';
+            estudiantes.forEach(est => {
+                selectEst.innerHTML += `<option value="${est.id_estudiante}">${est.nombre_completo} — ${est.carrera}</option>`;
+            });
+
+            abrirModal('modalPostular');
+        }
+
+        // Ver todos los postulantes de un aviso y cambiar su estado
+        async function verPostulantes(idOferta, tituloOferta) {
+            document.getElementById('verPostulantesTitulo').textContent = `Puesto: ${tituloOferta}`;
+            const container = document.getElementById('listaPostulantesContainer');
+            container.innerHTML = '<p>Cargando candidatos...</p>';
+            abrirModal('modalVerPostulantes');
+
+            const res = await fetch(`/api/ofertas/${idOferta}/postulantes`);
+            const postulantes = await res.json();
+
+            if (postulantes.length === 0) {
+                container.innerHTML = '<p style="color: #64748b;">Todavía no hay estudiantes postulados a esta oferta.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            postulantes.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'item-postulante';
+                div.innerHTML = `
+                    <div class="postulante-info">
+                        <img src="${p.foto_perfil_url}" alt="Foto" class="postulante-foto">
+                        <div>
+                            <strong style="color: #0f172a;">${p.nombre_completo}</strong>
+                            <div style="font-size: 0.82rem; color: #475569;">🎓 ${p.carrera} (${p.institucion})</div>
+                            <div style="font-size: 0.8rem; color: #64748b;">✉️ ${p.email} | 📞 ${p.telefono}</div>
+                            <div class="postulante-links" style="margin-top: 0.3rem;">
+                                <a href="${p.cv_pdf_url}" target="_blank">📄 Abrir CV (PDF)</a>
+                                <a href="${p.certificado_regular_url}" target="_blank">📎 Ver Certificado</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label style="display:block; font-size: 0.75rem; color:#64748b; margin-bottom:0.2rem;">Estado del candidato:</label>
+                        <select class="select-estado" onchange="cambiarEstadoPostulacion(${p.id_postulacion}, this.value)">
+                            <option value="Pendiente" ${p.estado === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                            <option value="En revisión" ${p.estado === 'En revisión' ? 'selected' : ''}>🔍 En revisión</option>
+                            <option value="Entrevista" ${p.estado === 'Entrevista' ? 'selected' : ''}>🗣️ Entrevista</option>
+                            <option value="Aceptado" ${p.estado === 'Aceptado' ? 'selected' : ''}>✅ Aceptado</option>
+                            <option value="Rechazado" ${p.estado === 'Rechazado' ? 'selected' : ''}>❌ Rechazado</option>
+                        </select>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        async function cambiarEstadoPostulacion(idPostulacion, nuevoEstado) {
+            const res = await fetch(`/api/postulaciones/${idPostulacion}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ estado: nuevoEstado })
+            });
+            if (!res.ok) {
+                alert('Error al actualizar el estado de la postulación.');
+            }
+        }
+
+        async function cargarOfertas() {
+            const contenedor = document.getElementById('contenedorOfertas');
+            const params = new URLSearchParams();
+
+            if (filtroCarrera.value.trim()) params.append('carrera', filtroCarrera.value.trim());
+            if (filtroModalidad.value) params.append('modalidad', filtroModalidad.value);
+            if (filtroTipo.value) params.append('tipo_puesto', filtroTipo.value);
+
+            try {
+                const res = await fetch(`/api/ofertas?${params.toString()}`);
+                const ofertas = await res.json();
+
+                contenedor.innerHTML = '';
+                contadorOfertas.textContent = ofertas.length;
+
+                if (ofertas.length === 0) {
+                    contenedor.innerHTML = '<p>No hay ofertas publicadas aún. ¡Registrá una empresa y publicá la primera!</p>';
+                    return;
+                }
+
+                ofertas.forEach(of => {
+                    const tituloLimpio = of.titulo.replace(/'/g, "\\'");
+                    const card = document.createElement('article');
+                    card.className = 'card-oferta';
+                    card.innerHTML = `
+                        <div>
+                            <h3>${of.titulo}</h3>
+                            <p class="empresa-info">🏢 ${of.razon_social} ${of.ubicacion ? `— 📍 ${of.ubicacion}` : ''}</p>
+                        </div>
+                        <p style="font-size: 0.9rem; color: #334155; line-height: 1.4;">${of.descripcion}</p>
+                        <div class="badges">
+                            <span class="badge badge-carrera">🎓 ${of.carrera_objetivo}</span>
+                            <span class="badge">💻 ${of.modalidad}</span>
+                            <span class="badge">⏱️ ${of.tipo_puesto}</span>
+                        </div>
+                        <div style="font-size: 0.82rem; color: #64748b;">
+                            ✉️ Contacto RRHH: <strong>${of.email_contacto}</strong>
+                        </div>
+                        <div class="acciones-oferta">
+                            <button class="btn-postular" onclick="abrirModalPostular(${of.id_oferta}, '${tituloLimpio}')">✋ Postularme</button>
+                            <button class="btn-ver-postulantes" onclick="verPostulantes(${of.id_oferta}, '${tituloLimpio}')">👥 Postulantes</button>
+                            <button class="btn-eliminar" onclick="eliminarOferta(${of.id_oferta})">🗑️</button>
+                        </div>
+                    `;
+                    contenedor.appendChild(card);
+                });
+            } catch (error) {
+                contenedor.innerHTML = '<p>Error al cargar las ofertas.</p>';
+            }
+        }
+
+        // Guardar Empresa
+        document.getElementById('formEmpresa').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = {
+                razon_social: document.getElementById('emp_razon').value,
+                cuit: document.getElementById('emp_cuit').value,
+                email_contacto: document.getElementById('emp_email').value,
+                telefono: document.getElementById('emp_telefono').value,
+                rubro: document.getElementById('emp_rubro').value,
+                ubicacion: document.getElementById('emp_ubicacion').value
+            };
+
+            const res = await fetch('/api/empresas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                alert('¡Empresa registrada con éxito!');
+                document.getElementById('formEmpresa').reset();
+                cerrarModal('modalEmpresa');
+            } else {
+                alert(data.error || 'Error al registrar empresa.');
+            }
+        });
+
+        // Publicar Oferta
+        document.getElementById('formOferta').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = {
+                id_empresa: document.getElementById('of_empresa').value,
+                titulo: document.getElementById('of_titulo').value,
+                carrera_objetivo: document.getElementById('of_carrera').value,
+                modalidad: document.getElementById('of_modalidad').value,
+                tipo_puesto: document.getElementById('of_tipo').value,
+                descripcion: document.getElementById('of_descripcion').value
+            };
+
+            const res = await fetch('/api/ofertas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            if (res.ok) {
+                document.getElementById('formOferta').reset();
+                cerrarModal('modalOferta');
+                cargarOfertas();
+            } else {
+                alert('Error al publicar la oferta.');
+            }
+        });
+
+        // Confirmar Postulación
+        document.getElementById('formPostular').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = {
+                id_oferta: document.getElementById('post_id_oferta').value,
+                id_estudiante: document.getElementById('post_id_estudiante').value
+            };
+
+            const res = await fetch('/api/postulaciones', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                alert('¡Postulación enviada con éxito!');
+                cerrarModal('modalPostular');
+            } else {
+                alert(data.error || 'No se pudo completar la postulación.');
+            }
+        });
+
+        async function eliminarOferta(id) {
+            if (!confirm('¿Seguro que querés eliminar esta oferta laboral?')) return;
+            await fetch(`/api/ofertas/${id}`, { method: 'DELETE' });
+            cargarOfertas();
+        }
+
+        filtroCarrera.addEventListener('input', cargarOfertas);
+        filtroModalidad.addEventListener('change', cargarOfertas);
+        filtroTipo.addEventListener('change', cargarOfertas);
+
+        document.addEventListener('DOMContentLoaded', cargarOfertas);
+    </script>
+</body>
+</html>

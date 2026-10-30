@@ -57,3 +57,47 @@ CREATE TABLE IF NOT EXISTS postulaciones (
         REFERENCES estudiantes(id_estudiante) ON DELETE CASCADE,
     UNIQUE KEY uk_postulacion_unica (id_oferta, id_estudiante)
 );
+
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS postulaciones;
+DROP TABLE IF EXISTS ofertas;
+DROP TABLE IF EXISTS empresas;
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE empresas (
+    id_empresa INT AUTO_INCREMENT PRIMARY KEY,
+    razon_social VARCHAR(150) NOT NULL,
+    cuit VARCHAR(20) UNIQUE NOT NULL,
+    email_contacto VARCHAR(150) UNIQUE NOT NULL,
+    telefono VARCHAR(50),
+    rubro VARCHAR(100),
+    ubicacion VARCHAR(150),
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE ofertas (
+    id_oferta INT AUTO_INCREMENT PRIMARY KEY,
+    id_empresa INT NOT NULL,
+    titulo VARCHAR(150) NOT NULL,
+    descripcion TEXT NOT NULL,
+    carrera_objetivo VARCHAR(120) NOT NULL,
+    modalidad ENUM('Presencial', 'Remoto', 'Híbrido') NOT NULL,
+    tipo_puesto ENUM('Pasantía', 'Part-Time', 'Full-Time') NOT NULL,
+    activa BOOLEAN DEFAULT TRUE,
+    fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_oferta_empresa FOREIGN KEY (id_empresa) 
+        REFERENCES empresas(id_empresa) ON DELETE CASCADE
+);
+
+CREATE TABLE postulaciones (
+    id_postulacion INT AUTO_INCREMENT PRIMARY KEY,
+    id_oferta INT NOT NULL,
+    id_estudiante INT NOT NULL,
+    estado ENUM('Pendiente', 'En revisión', 'Entrevista', 'Rechazado', 'Aceptado') DEFAULT 'Pendiente',
+    fecha_postulacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_postulacion_oferta FOREIGN KEY (id_oferta) 
+        REFERENCES ofertas(id_oferta) ON DELETE CASCADE,
+    CONSTRAINT fk_postulacion_estudiante FOREIGN KEY (id_estudiante) 
+        REFERENCES estudiantes(id_estudiante) ON DELETE CASCADE,
+    UNIQUE KEY uk_postulacion_unica (id_oferta, id_estudiante)
+);

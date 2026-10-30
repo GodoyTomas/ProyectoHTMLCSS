@@ -3,34 +3,328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Empleos Universitario</title>
+    <title>UniEmpleos - Portal de Talentos Universitarios</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .nav-links { margin-top: 1rem; display: flex; justify-content: center; gap: 1rem; }
+        .btn-nav {
+            display: inline-block; background: #2563eb; color: #fff;
+            padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; font-weight: 600;
+        }
+        .btn-nav:hover { background: #1d4ed8; }
+
+        /* Barra de búsqueda y filtros */
+        .barra-filtros {
+            background: #fff; padding: 1.2rem; border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06); margin-bottom: 2rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem;
+        }
+        .barra-filtros input {
+            padding: 0.7rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem;
+        }
+        .btn-limpiar {
+            background: #64748b; color: #fff; border: none; border-radius: 6px;
+            cursor: pointer; font-weight: 600; padding: 0.7rem;
+        }
+        .btn-limpiar:hover { background: #475569; }
+
+        /* Tarjetas de estudiantes */
+        .card-estudiante {
+            background: #fff; border-radius: 10px; padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07); display: flex; flex-direction: column; gap: 0.8rem;
+            position: relative;
+        }
+        .header-perfil { display: flex; align-items: center; gap: 1rem; }
+        .foto-perfil {
+            width: 70px; height: 70px; border-radius: 50%; object-fit: cover;
+            border: 2px solid #2563eb;
+        }
+        .info-basica h3 { margin: 0; color: #0f172a; font-size: 1.1rem; }
+        .info-basica p { margin: 0.2rem 0 0; font-size: 0.88rem; color: #475569; font-weight: 600; }
+        .datos-contacto { font-size: 0.85rem; color: #334155; line-height: 1.5; }
+        .redes a {
+            margin-right: 0.8rem; font-size: 0.85rem; color: #2563eb;
+            text-decoration: none; font-weight: 600;
+        }
+        .archivos-acciones {
+            display: flex; gap: 0.5rem; margin-top: auto; padding-top: 0.8rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        .btn-archivo {
+            flex: 1; text-align: center; padding: 0.5rem; border-radius: 6px;
+            font-size: 0.82rem; font-weight: 600; text-decoration: none;
+        }
+        .btn-cv { background: #0f172a; color: #fff; }
+        .btn-cert { background: #e2e8f0; color: #0f172a; }
+
+        /* Botones de Editar y Eliminar */
+        .acciones-crud {
+            display: flex; gap: 0.5rem; margin-top: 0.4rem;
+        }
+        .btn-editar, .btn-eliminar {
+            flex: 1; padding: 0.45rem; border: none; border-radius: 6px;
+            font-size: 0.8rem; font-weight: 600; cursor: pointer;
+        }
+        .btn-editar { background: #dbeafe; color: #1e40af; }
+        .btn-editar:hover { background: #bfdbfe; }
+        .btn-eliminar { background: #fee2e2; color: #991b1b; }
+        .btn-eliminar:hover { background: #fecaca; }
+
+        /* Modal de Edición */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background: #fff; padding: 1.8rem; border-radius: 10px; width: 90%; max-width: 550px;
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal-content h3 { margin-bottom: 1rem; }
+        .form-group { margin-bottom: 0.8rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px;
+        }
+        .modal-botones { display: flex; gap: 0.8rem; margin-top: 1rem; }
+        .btn-guardar { flex: 1; background: #2563eb; color: #fff; border: none; padding: 0.7rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-cancelar { flex: 1; background: #e2e8f0; color: #334155; border: none; padding: 0.7rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    </style>
 </head>
 <body>
     <header class="navbar">
         <h1>UniEmpleos</h1>
-        <p>Pasantías y primer empleo para estudiantes universitarios</p>
+        <p>Portal de Empleos y Pasantías para Estudiantes Universitarios</p>
+        <div class="nav-links">
+            <a href="registro.html" class="btn-nav">+ Cargar Nuevo Perfil de Estudiante</a>
+        </div>
+        <div class="nav-links">
+    <a href="registro.html" class="btn-nav">+ Cargar Nuevo Perfil de Estudiante</a>
+    <a href="ofertas.html" class="btn-nav" style="background: #0f172a;">💼 Ver Ofertas Laborales y Empresas</a>
+</div>
     </header>
 
     <main class="contenedor">
-        <!-- Barra de filtros -->
-        <section class="filtros">
-            <input type="text" id="filtroCarrera" placeholder="Filtrar por carrera (ej. Ingeniería Informática)...">
-            <select id="filtroModalidad">
-                <option value="">Todas las modalidades</option>
-                <option value="Presencial">Presencial</option>
-                <option value="Híbrido">Híbrido</option>
-                <option value="Remoto">Remoto</option>
-            </select>
-            <button id="btnBuscar">Filtrar</button>
+        <!-- Barra de filtros en tiempo real -->
+        <section class="barra-filtros">
+            <input type="text" id="filtroBusqueda" placeholder="🔍 Buscar por nombre o habilidad (ej. SQL, Java)...">
+            <input type="text" id="filtroCarrera" placeholder="🎓 Filtrar por carrera...">
+            <input type="text" id="filtroInstitucion" placeholder="🏛️ Filtrar por universidad...">
+            <button id="btnLimpiar" class="btn-limpiar">Limpiar filtros</button>
         </section>
 
-        <!-- Listado dinámico de ofertas -->
-        <section id="contenedorOfertas" class="grid-ofertas">
-            <!-- Las tarjetas se inyectan desde app.js -->
+        <h2 style="margin-bottom: 1.5rem;">Talentos Universitarios (<span id="contadorEstudiantes">0</span>)</h2>
+        <section id="contenedorEstudiantes" class="grid-ofertas">
+            <p>Cargando perfiles...</p>
         </section>
     </main>
 
-    <script src="app.js"></script>
+    <!-- Modal para Editar Estudiante -->
+    <div id="modalEditar" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Editar Perfil de Estudiante</h3>
+            <form id="formEditar">
+                <input type="hidden" id="edit_id">
+                <div class="form-group">
+                    <label>Nombre y Apellido</label>
+                    <input type="text" id="edit_nombre" required>
+                </div>
+                <div class="form-group">
+                    <label>Institución / Universidad</label>
+                    <input type="text" id="edit_institucion" required>
+                </div>
+                <div class="form-group">
+                    <label>Carrera</label>
+                    <input type="text" id="edit_carrera" required>
+                </div>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <input type="text" id="edit_direccion" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="edit_email" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" id="edit_telefono" required>
+                </div>
+                <div class="form-group">
+                    <label>LinkedIn URL</label>
+                    <input type="url" id="edit_linkedin">
+                </div>
+                <div class="form-group">
+                    <label>GitHub / Portfolio URL</label>
+                    <input type="url" id="edit_github">
+                </div>
+                <div class="form-group">
+                    <label>Instagram URL</label>
+                    <input type="url" id="edit_instagram">
+                </div>
+                <div class="form-group">
+                    <label>Descripción / Perfil Profesional</label>
+                    <textarea id="edit_descripcion" rows="3" required></textarea>
+                </div>
+                <div class="modal-botones">
+                    <button type="submit" class="btn-guardar">Guardar Cambios</button>
+                    <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let listaEstudiantes = [];
+
+        const inputBusqueda = document.getElementById('filtroBusqueda');
+        const inputCarrera = document.getElementById('filtroCarrera');
+        const inputInstitucion = document.getElementById('filtroInstitucion');
+        const btnLimpiar = document.getElementById('btnLimpiar');
+        const contador = document.getElementById('contadorEstudiantes');
+
+        async function cargarEstudiantes() {
+            const contenedor = document.getElementById('contenedorEstudiantes');
+            const params = new URLSearchParams();
+
+            if (inputBusqueda.value.trim()) params.append('q', inputBusqueda.value.trim());
+            if (inputCarrera.value.trim()) params.append('carrera', inputCarrera.value.trim());
+            if (inputInstitucion.value.trim()) params.append('institucion', inputInstitucion.value.trim());
+
+            try {
+                const res = await fetch(`/api/estudiantes?${params.toString()}`);
+                listaEstudiantes = await res.json();
+
+                contenedor.innerHTML = '';
+                contador.textContent = listaEstudiantes.length;
+
+                if (listaEstudiantes.length === 0) {
+                    contenedor.innerHTML = '<p>No se encontraron estudiantes con esos criterios.</p>';
+                    return;
+                }
+
+                listaEstudiantes.forEach(est => {
+                    const card = document.createElement('article');
+                    card.className = 'card-estudiante';
+                    card.innerHTML = `
+                        <div class="header-perfil">
+                            <img src="${est.foto_perfil_url}" alt="Foto de ${est.nombre_completo}" class="foto-perfil">
+                            <div class="info-basica">
+                                <h3>${est.nombre_completo}</h3>
+                                <p>🎓 ${est.carrera}</p>
+                                <p style="font-weight: 400;">🏛️ ${est.institucion}</p>
+                            </div>
+                        </div>
+
+                        <p style="font-size: 0.9rem; color: #334155;">${est.descripcion}</p>
+
+                        <div class="datos-contacto">
+                            <div>📍 <strong>Dirección:</strong> ${est.direccion}</div>
+                            <div>✉️ <strong>Email:</strong> ${est.email}</div>
+                            <div>📞 <strong>Tel:</strong> ${est.telefono}</div>
+                        </div>
+
+                        <div class="redes">
+                            ${est.linkedin_url ? `<a href="${est.linkedin_url}" target="_blank">LinkedIn ↗</a>` : ''}
+                            ${est.github_portfolio_url ? `<a href="${est.github_portfolio_url}" target="_blank">GitHub/Portfolio ↗</a>` : ''}
+                            ${est.instagram_url ? `<a href="${est.instagram_url}" target="_blank">Instagram ↗</a>` : ''}
+                        </div>
+
+                        <div class="archivos-acciones">
+                            <a href="${est.cv_pdf_url}" target="_blank" class="btn-archivo btn-cv">📄 Ver CV (PDF)</a>
+                            <a href="${est.certificado_regular_url}" target="_blank" class="btn-archivo btn-cert">📎 Certificado</a>
+                        </div>
+
+                        <div class="acciones-crud">
+                            <button class="btn-editar" onclick="abrirModalEditar(${est.id_estudiante})">✏️ Editar</button>
+                            <button class="btn-eliminar" onclick="eliminarEstudiante(${est.id_estudiante}, '${est.nombre_completo}')">🗑️ Eliminar</button>
+                        </div>
+                    `;
+                    contenedor.appendChild(card);
+                });
+            } catch (err) {
+                contenedor.innerHTML = '<p>Error al cargar los estudiantes desde el servidor.</p>';
+            }
+        }
+
+        // Eventos para filtrar en tiempo real mientras escribís
+        inputBusqueda.addEventListener('input', cargarEstudiantes);
+        inputCarrera.addEventListener('input', cargarEstudiantes);
+        inputInstitucion.addEventListener('input', cargarEstudiantes);
+
+        btnLimpiar.addEventListener('click', () => {
+            inputBusqueda.value = '';
+            inputCarrera.value = '';
+            inputInstitucion.value = '';
+            cargarEstudiantes();
+        });
+
+        // Funciones para Editar
+        function abrirModalEditar(id) {
+            const est = listaEstudiantes.find(e => e.id_estudiante === id);
+            if (!est) return;
+
+            document.getElementById('edit_id').value = est.id_estudiante;
+            document.getElementById('edit_nombre').value = est.nombre_completo;
+            document.getElementById('edit_institucion').value = est.institucion;
+            document.getElementById('edit_carrera').value = est.carrera;
+            document.getElementById('edit_direccion').value = est.direccion;
+            document.getElementById('edit_email').value = est.email;
+            document.getElementById('edit_telefono').value = est.telefono;
+            document.getElementById('edit_linkedin').value = est.linkedin_url || '';
+            document.getElementById('edit_github').value = est.github_portfolio_url || '';
+            document.getElementById('edit_instagram').value = est.instagram_url || '';
+            document.getElementById('edit_descripcion').value = est.descripcion;
+
+            document.getElementById('modalEditar').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalEditar').style.display = 'none';
+        }
+
+        document.getElementById('formEditar').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit_id').value;
+
+            const datosActualizados = {
+                nombre_completo: document.getElementById('edit_nombre').value,
+                institucion: document.getElementById('edit_institucion').value,
+                carrera: document.getElementById('edit_carrera').value,
+                direccion: document.getElementById('edit_direccion').value,
+                email: document.getElementById('edit_email').value,
+                telefono: document.getElementById('edit_telefono').value,
+                linkedin_url: document.getElementById('edit_linkedin').value,
+                github_portfolio_url: document.getElementById('edit_github').value,
+                instagram_url: document.getElementById('edit_instagram').value,
+                descripcion: document.getElementById('edit_descripcion').value
+            };
+
+            const res = await fetch(`/api/estudiantes/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datosActualizados)
+            });
+
+            if (res.ok) {
+                cerrarModal();
+                cargarEstudiantes();
+            } else {
+                alert('Error al actualizar el perfil.');
+            }
+        });
+
+        // Función para Eliminar
+        async function eliminarEstudiante(id, nombre) {
+            if (!confirm(`¿Estás seguro de que querés eliminar el perfil de ${nombre} y sus archivos?`)) return;
+
+            const res = await fetch(`/api/estudiantes/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                cargarEstudiantes();
+            } else {
+                alert('No se pudo eliminar el estudiante.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarEstudiantes);
+    </script>
 </body>
 </html>
