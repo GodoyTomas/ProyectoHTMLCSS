@@ -20,6 +20,10 @@ CREATE TABLE administradores (
 INSERT INTO administradores (nombre, email, password) 
 VALUES ('Administrador General', 'admin@uniempleos.com', 'admin123');
 
+-- Columnas de confirmación de lectura en postulaciones
+ALTER TABLE postulaciones ADD COLUMN leido_por_empresa BOOLEAN DEFAULT FALSE;
+ALTER TABLE postulaciones ADD COLUMN fecha_lectura TIMESTAMP NULL;
+
 -- 2. Tabla de Estudiantes
 CREATE TABLE estudiantes (
     id_estudiante INT AUTO_INCREMENT PRIMARY KEY,
