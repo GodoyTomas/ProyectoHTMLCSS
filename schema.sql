@@ -101,3 +101,11 @@ CREATE TABLE mensajes (
 );
 
 ALTER TABLE empresas ADD COLUMN logo_url VARCHAR(255) DEFAULT NULL;
+ALTER TABLE estudiantes
+ADD COLUMN password VARCHAR(255) NOT NULL;
+
+ALTER TABLE empresas
+ADD COLUMN password VARCHAR(255) NOT NULL;
+
+ALTER Table empresas
+add COLUMN descripcion_empresa VARCHAR(255) NOT NULL;
