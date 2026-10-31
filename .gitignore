@@ -1,0 +1,15 @@
+# Dependencias de Node.js (se reinstalan con npm install)
+node_modules/
+
+# Archivos subidos por los usuarios (fotos, CVs, certificados)
+uploads/*
+!uploads/.gitkeep
+
+# Credenciales y variables de entorno (Seguridad)
+.env
+db.js
+
+# Archivos temporales del sistema y logs
+npm-debug.log*
+.DS_Store
+Thumbs.db
