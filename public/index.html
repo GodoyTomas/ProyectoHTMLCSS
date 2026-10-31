@@ -3,328 +3,1248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniEmpleos - Portal de Talentos Universitarios</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>UniEmpleos - Plataforma Universitaria Multi-Rol</title>
     <style>
-        .nav-links { margin-top: 1rem; display: flex; justify-content: center; gap: 1rem; }
-        .btn-nav {
-            display: inline-block; background: #2563eb; color: #fff;
-            padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; font-weight: 600;
-        }
-        .btn-nav:hover { background: #1d4ed8; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: #f1f5f9; color: #1e293b; }
 
-        /* Barra de búsqueda y filtros */
+        /* Barra Superior Centrada */
+        .navbar {
+            background: #0f172a; color: #fff; padding: 1.5rem 2rem;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; gap: 0.8rem; position: relative;
+        }
+        .navbar h1 { font-size: 2rem; color: #38bdf8; letter-spacing: 0.5px; }
+        .navbar small { color: #94a3b8; font-size: 0.95rem; display: block; margin-top: 0.2rem; }
+        .user-bar {
+            display: flex; align-items: center; justify-content: center; gap: 0.8rem;
+            flex-wrap: wrap; margin-top: 0.4rem;
+        }
+        .badge-rol {
+            background: #2563eb; color: #fff; padding: 0.3rem 0.7rem;
+            border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+        }
+        .btn {
+            padding: 0.55rem 1rem; border-radius: 6px; border: none;
+            font-weight: 600; cursor: pointer; font-size: 0.85rem; text-decoration: none; display: inline-block;
+        }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-success { background: #16a34a; color: #fff; }
+        .btn-danger { background: #dc2626; color: #fff; }
+        .btn-dark { background: #334155; color: #fff; }
+        .btn-outline { background: #e2e8f0; color: #0f172a; }
+
+        .contenedor { max-width: 1150px; margin: 1.8rem auto; padding: 0 1rem; }
+
+        /* Estilos de los Carruseles */
+        .seccion-carruseles {
+            max-width: 1150px; margin: 1.5rem auto; padding: 0 1rem;
+        }
+        .carrusel-bloque {
+            background: #fff; padding: 1.2rem 1.5rem; border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-bottom: 1.5rem;
+        }
+        .carrusel-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;
+        }
+        .carrusel-header h2 { font-size: 1.2rem; color: #0f172a; }
+        .carrusel-controles { display: flex; gap: 0.4rem; }
+        .btn-flecha {
+            background: #0f172a; color: #fff; border: none; width: 34px; height: 34px;
+            border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1rem;
+        }
+        .btn-flecha:hover { background: #2563eb; }
+        .carrusel-track {
+            display: flex; gap: 1rem; overflow-x: auto; 
+            padding-bottom: 0.5rem; scrollbar-width: none;
+        }
+        .carrusel-track::-webkit-scrollbar { display: none; }
+
+        .item-carrusel-oferta {
+            min-width: 290px; max-width: 290px; background: #f8fafc;
+            border: 1px solid #e2e8f0; border-left: 4px solid #2563eb;
+            border-radius: 10px; padding: 1rem; flex-shrink: 0;
+            display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .item-carrusel-empresa {
+            min-width: 230px; max-width: 230px; background: #f8fafc;
+            border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.2rem;
+            flex-shrink: 0; text-align: center; display: flex; flex-direction: column;
+            align-items: center; gap: 0.5rem;
+        }
+        .logo-empresa-circular {
+            width: 68px; height: 68px; border-radius: 50%; object-fit: cover;
+            border: 2px solid #2563eb; background: #fff;
+        }
+
+        /* Tarjetas de Autenticación */
+        .auth-wrapper {
+            max-width: 520px; margin: 2rem auto; background: #fff;
+            padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .tabs-auth { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.8rem; }
+        .tab-btn {
+            flex: 1; padding: 0.6rem; border: none; background: #f1f5f9;
+            border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem;
+        }
+        .tab-btn.active { background: #2563eb; color: #fff; }
+
+        .form-group { margin-bottom: 0.9rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem;
+        }
+
+        /* Navegación de Paneles Internos */
+        .panel-nav {
+            display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem;
+            background: #fff; padding: 0.8rem; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.2rem; }
+        .card {
+            background: #fff; padding: 1.4rem; border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 0.7rem;
+        }
+        .foto-avatar { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid #2563eb; background: #fff; }
+        .badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .badge { background: #e2e8f0; color: #1e293b; padding: 0.25rem 0.55rem; border-radius: 5px; font-size: 0.78rem; font-weight: 600; }
+        .badge-visto { background: #dcfce7; color: #166534; }
+        .badge-no-visto { background: #fef3c7; color: #92400e; }
+
         .barra-filtros {
-            background: #fff; padding: 1.2rem; border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06); margin-bottom: 2rem;
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.8rem; background: #fff; padding: 1rem; border-radius: 10px; margin-bottom: 1.2rem;
         }
-        .barra-filtros input {
-            padding: 0.7rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem;
-        }
-        .btn-limpiar {
-            background: #64748b; color: #fff; border: none; border-radius: 6px;
-            cursor: pointer; font-weight: 600; padding: 0.7rem;
-        }
-        .btn-limpiar:hover { background: #475569; }
 
-        /* Tarjetas de estudiantes */
-        .card-estudiante {
-            background: #fff; border-radius: 10px; padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07); display: flex; flex-direction: column; gap: 0.8rem;
-            position: relative;
-        }
-        .header-perfil { display: flex; align-items: center; gap: 1rem; }
-        .foto-perfil {
-            width: 70px; height: 70px; border-radius: 50%; object-fit: cover;
-            border: 2px solid #2563eb;
-        }
-        .info-basica h3 { margin: 0; color: #0f172a; font-size: 1.1rem; }
-        .info-basica p { margin: 0.2rem 0 0; font-size: 0.88rem; color: #475569; font-weight: 600; }
-        .datos-contacto { font-size: 0.85rem; color: #334155; line-height: 1.5; }
-        .redes a {
-            margin-right: 0.8rem; font-size: 0.85rem; color: #2563eb;
-            text-decoration: none; font-weight: 600;
-        }
-        .archivos-acciones {
-            display: flex; gap: 0.5rem; margin-top: auto; padding-top: 0.8rem;
-            border-top: 1px solid #e2e8f0;
-        }
-        .btn-archivo {
-            flex: 1; text-align: center; padding: 0.5rem; border-radius: 6px;
-            font-size: 0.82rem; font-weight: 600; text-decoration: none;
-        }
-        .btn-cv { background: #0f172a; color: #fff; }
-        .btn-cert { background: #e2e8f0; color: #0f172a; }
-
-        /* Botones de Editar y Eliminar */
-        .acciones-crud {
-            display: flex; gap: 0.5rem; margin-top: 0.4rem;
-        }
-        .btn-editar, .btn-eliminar {
-            flex: 1; padding: 0.45rem; border: none; border-radius: 6px;
-            font-size: 0.8rem; font-weight: 600; cursor: pointer;
-        }
-        .btn-editar { background: #dbeafe; color: #1e40af; }
-        .btn-editar:hover { background: #bfdbfe; }
-        .btn-eliminar { background: #fee2e2; color: #991b1b; }
-        .btn-eliminar:hover { background: #fecaca; }
-
-        /* Modal de Edición */
+        /* Modales y Ventana de Chat */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6); justify-content: center; align-items: center; z-index: 1000;
+            background: rgba(15, 23, 42, 0.65); justify-content: center; align-items: center; z-index: 1000;
         }
         .modal-content {
-            background: #fff; padding: 1.8rem; border-radius: 10px; width: 90%; max-width: 550px;
+            background: #fff; padding: 1.6rem; border-radius: 10px; width: 92%; max-width: 650px;
             max-height: 90vh; overflow-y: auto;
         }
-        .modal-content h3 { margin-bottom: 1rem; }
-        .form-group { margin-bottom: 0.8rem; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px;
+        .chat-box {
+            height: 320px; overflow-y: auto; background: #f8fafc; border: 1px solid #cbd5e1;
+            border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem;
         }
-        .modal-botones { display: flex; gap: 0.8rem; margin-top: 1rem; }
-        .btn-guardar { flex: 1; background: #2563eb; color: #fff; border: none; padding: 0.7rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
-        .btn-cancelar { flex: 1; background: #e2e8f0; color: #334155; border: none; padding: 0.7rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .msg-burbuja { max-width: 78%; padding: 0.6rem 0.9rem; border-radius: 10px; font-size: 0.88rem; line-height: 1.4; }
+        .msg-mio { align-self: flex-end; background: #2563eb; color: #fff; }
+        .msg-otro { align-self: flex-start; background: #e2e8f0; color: #0f172a; }
+        .msg-hora { font-size: 0.7rem; opacity: 0.75; margin-top: 0.2rem; display: block; }
+
+        .oculto { display: none !important; }
     </style>
 </head>
 <body>
+
+    <!-- ENCABEZADO CENTRADO -->
     <header class="navbar">
-        <h1>UniEmpleos</h1>
-        <p>Portal de Empleos y Pasantías para Estudiantes Universitarios</p>
-        <div class="nav-links">
-            <a href="registro.html" class="btn-nav">+ Cargar Nuevo Perfil de Estudiante</a>
+        <div>
+            <h1>🎓 UniEmpleos</h1>
+            <small>Portal Universitario de Empleos, Pasantías y Talentos</small>
         </div>
-        <div class="nav-links">
-    <a href="registro.html" class="btn-nav">+ Cargar Nuevo Perfil de Estudiante</a>
-    <a href="ofertas.html" class="btn-nav" style="background: #0f172a;">💼 Ver Ofertas Laborales y Empresas</a>
-</div>
+        <div id="userBar" class="user-bar oculto">
+            <img id="avatarHeaderUsuario" class="foto-avatar oculto" style="width: 38px; height: 38px;">
+            <span id="labelRol" class="badge-rol"></span>
+            <strong id="labelNombreUsuario"></strong>
+            <button class="btn btn-danger" onclick="cerrarSesion()">Cerrar Sesión</button>
+        </div>
     </header>
 
-    <main class="contenedor">
-        <!-- Barra de filtros en tiempo real -->
-        <section class="barra-filtros">
-            <input type="text" id="filtroBusqueda" placeholder="🔍 Buscar por nombre o habilidad (ej. SQL, Java)...">
-            <input type="text" id="filtroCarrera" placeholder="🎓 Filtrar por carrera...">
-            <input type="text" id="filtroInstitucion" placeholder="🏛️ Filtrar por universidad...">
-            <button id="btnLimpiar" class="btn-limpiar">Limpiar filtros</button>
+    <!-- ========================================== -->
+    <!-- CARRUSELES DE OFERTAS Y EMPRESAS           -->
+    <!-- ========================================== -->
+    <section class="seccion-carruseles">
+        <!-- Carrusel 1: Ofertas Laborales -->
+        <div class="carrusel-bloque">
+            <div class="carrusel-header">
+                <h2>🔥 Últimas Ofertas Laborales y Pasantías</h2>
+                <div class="carrusel-controles">
+                    <button class="btn-flecha" onclick="moverCarrusel('trackOfertas', -310)">&#10094;</button>
+                    <button class="btn-flecha" onclick="moverCarrusel('trackOfertas', 310)">&#10095;</button>
+                </div>
+            </div>
+            <div id="trackOfertas" class="carrusel-track">
+                <p style="color: #64748b; font-size: 0.9rem;">Cargando ofertas...</p>
+            </div>
+        </div>
+
+        <!-- Carrusel 2: Empresas -->
+        <div class="carrusel-bloque">
+            <div class="carrusel-header">
+                <h2>🏢 Empresas que Confían en el Talento Universitario</h2>
+                <div class="carrusel-controles">
+                    <button class="btn-flecha" onclick="moverCarrusel('trackEmpresas', -250)">&#10094;</button>
+                    <button class="btn-flecha" onclick="moverCarrusel('trackEmpresas', 250)">&#10095;</button>
+                </div>
+            </div>
+            <div id="trackEmpresas" class="carrusel-track">
+                <p style="color: #64748b; font-size: 0.9rem;">Cargando empresas...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SECCIÓN 1: LOGIN Y REGISTRO MULTI-ROL      -->
+    <!-- ========================================== -->
+    <div id="vistaAuth" class="auth-wrapper">
+        <div class="tabs-auth">
+            <button class="tab-btn active" onclick="mostrarTabAuth('login', this)">🔑 Iniciar Sesión</button>
+            <button class="tab-btn" onclick="mostrarTabAuth('regEstudiante', this)">🎓 Soy Estudiante</button>
+            <button class="tab-btn" onclick="mostrarTabAuth('regEmpresa', this)">🏢 Soy Empresa</button>
+        </div>
+
+        <!-- Formulario Login -->
+        <form id="formLogin">
+            <h3 style="margin-bottom: 1rem; text-align: center;">Ingresar a mi Panel</h3>
+            <div class="form-group">
+                <label>Tipo de Usuario *</label>
+                <select id="login_rol" required>
+                    <option value="estudiante">🎓 Estudiante Universitario</option>
+                    <option value="empresa">🏢 Empresa / Reclutador</option>
+                    <option value="admin">🛡️ Administrador del Sistema</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" id="login_email" placeholder="ejemplo@correo.com" required>
+            </div>
+            <div class="form-group">
+                <label>Contraseña *</label>
+                <input type="password" id="login_password" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem;">Iniciar Sesión</button>
+            <p style="font-size: 0.78rem; color: #64748b; margin-top: 0.8rem; text-align: center;">
+                 Demo Admin: <strong>admin@uniempleos.com</strong> / Contraseña: <strong>admin123</strong>
+            </p>
+        </form>
+
+        <!-- Formulario Registro Estudiante -->
+        <form id="formRegEstudiante" class="oculto" enctype="multipart/form-data">
+            <h3 style="margin-bottom: 1rem; text-align: center;">Inscripción de Estudiante</h3>
+            <div class="form-group"><label>Nombre y Apellido *</label><input type="text" name="nombre_completo" required></div>
+            <div class="form-group"><label>Institución / Universidad *</label><input type="text" name="institucion" placeholder="Ej. Universidad Gastón Dachary" required></div>
+            <div class="form-group"><label>Carrera *</label><input type="text" name="carrera" placeholder="Ej. Ingeniería Informática" required></div>
+            <div class="form-group"><label>Dirección *</label><input type="text" name="direccion" required></div>
+            <div class="form-group"><label>Email *</label><input type="email" name="email" required></div>
+            <div class="form-group"><label>Contraseña *</label><input type="password" name="password" required></div>
+            <div class="form-group"><label>Teléfono *</label><input type="text" name="telefono" required></div>
+            <div class="form-group"><label>LinkedIn (URL)</label><input type="url" name="linkedin_url"></div>
+            <div class="form-group"><label>GitHub / Portfolio (URL)</label><input type="url" name="github_portfolio_url"></div>
+            <div class="form-group"><label>Instagram (URL)</label><input type="url" name="instagram_url"></div>
+            <div class="form-group"><label>Descripción Profesional *</label><textarea name="descripcion" rows="3" required></textarea></div>
+            <div class="form-group"><label>Foto de Perfil (.JPG o .PNG) *</label><input type="file" name="foto_perfil" accept=".jpg,.jpeg,.png" required></div>
+            <div class="form-group"><label>CV (.PDF) *</label><input type="file" name="cv_pdf" accept=".pdf" required></div>
+            <div class="form-group"><label>Certificado Alumno Regular (Cualquier formato) *</label><input type="file" name="certificado_regular" required></div>
+            <button type="submit" class="btn btn-success" style="width: 100%; padding: 0.8rem;">Crear Cuenta de Estudiante</button>
+        </form>
+
+        <!-- Formulario Registro Empresa (Con Logo / Imagen de Perfil) -->
+        <form id="formRegEmpresa" class="oculto" enctype="multipart/form-data">
+            <h3 style="margin-bottom: 1rem; text-align: center;">Inscripción de Empresa</h3>
+            <div class="form-group"><label>Razón Social / Empresa *</label><input type="text" name="razon_social" required></div>
+            <div class="form-group"><label>CUIT *</label><input type="text" name="cuit" placeholder="30-12345678-9" required></div>
+            <div class="form-group"><label>Email de Contacto *</label><input type="email" name="email_contacto" required></div>
+            <div class="form-group"><label>Contraseña *</label><input type="password" name="password" required></div>
+            <div class="form-group"><label>Teléfono *</label><input type="text" name="telefono" required></div>
+            <div class="form-group"><label>Rubro</label><input type="text" name="rubro" placeholder="Desarrollo de Software, Finanzas..."></div>
+            <div class="form-group"><label>Ubicación</label><input type="text" name="ubicacion" placeholder="Posadas, Misiones"></div>
+            <div class="form-group"><label>Descripción de la Empresa</label><textarea name="descripcion_empresa" rows="3"></textarea></div>
+            <div class="form-group"><label>Logo / Imagen de Perfil de la Empresa (.JPG o .PNG)</label><input type="file" name="logo_empresa" accept=".jpg,.jpeg,.png"></div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem;">Crear Cuenta de Empresa</button>
+        </form>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SECCIÓN 2: PANEL DEL ESTUDIANTE            -->
+    <!-- ========================================== -->
+    <main id="panelEstudiante" class="contenedor oculto">
+        <nav class="panel-nav">
+            <button class="btn btn-primary" onclick="cambiarSubvistaEst('ofertas')">💼 Buscar Ofertas y Postularme</button>
+            <button class="btn btn-dark" onclick="cambiarSubvistaEst('postulaciones')">📋 Mis Postulaciones (Estado de Lectura)</button>
+            <button class="btn btn-dark" onclick="cambiarSubvistaEst('mensajes')">💬 Mis Mensajes con Empresas</button>
+            <button class="btn btn-outline" onclick="cambiarSubvistaEst('perfil')">⚙️ Editar Mi Perfil y Archivos</button>
+        </nav>
+
+        <section id="estSubOfertas">
+            <div class="barra-filtros">
+                <input type="text" id="estFiltroCarrera" placeholder="🎓 Filtrar por carrera..." oninput="cargarOfertasEstudiante()">
+                <select id="estFiltroModalidad" onchange="cargarOfertasEstudiante()">
+                    <option value="">Todas las modalidades</option>
+                    <option value="Presencial">Presencial</option>
+                    <option value="Híbrido">Híbrido</option>
+                    <option value="Remoto">Remoto</option>
+                </select>
+            </div>
+            <div id="gridOfertasEstudiante" class="grid-cards"></div>
         </section>
 
-        <h2 style="margin-bottom: 1.5rem;">Talentos Universitarios (<span id="contadorEstudiantes">0</span>)</h2>
-        <section id="contenedorEstudiantes" class="grid-ofertas">
-            <p>Cargando perfiles...</p>
+        <section id="estSubPostulaciones" class="oculto">
+            <h3 style="margin-bottom: 1rem;">Seguimiento de Mis Postulaciones</h3>
+            <div id="gridMisPostulaciones" class="grid-cards"></div>
+        </section>
+
+        <section id="estSubMensajes" class="oculto">
+            <h3 style="margin-bottom: 1rem;">Empresas con las que tenés mensajes</h3>
+            <div id="gridConversacionesEst" class="grid-cards"></div>
+        </section>
+
+        <section id="estSubPerfil" class="oculto">
+            <div class="card" style="max-width: 650px; margin: 0 auto;">
+                <h3>Modificar Mis Datos y Documentos</h3>
+                <form id="formEditarMiPerfilEst" enctype="multipart/form-data">
+                    <div class="form-group"><label>Nombre y Apellido</label><input type="text" name="nombre_completo" id="mi_est_nombre" required></div>
+                    <div class="form-group"><label>Institución</label><input type="text" name="institucion" id="mi_est_inst" required></div>
+                    <div class="form-group"><label>Carrera</label><input type="text" name="carrera" id="mi_est_carrera" required></div>
+                    <div class="form-group"><label>Dirección</label><input type="text" name="direccion" id="mi_est_dir" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" name="email" id="mi_est_email" required></div>
+                    <div class="form-group"><label>Nueva Contraseña (dejar en blanco para mantener actual)</label><input type="password" name="password"></div>
+                    <div class="form-group"><label>Teléfono</label><input type="text" name="telefono" id="mi_est_tel" required></div>
+                    <div class="form-group"><label>LinkedIn</label><input type="url" name="linkedin_url" id="mi_est_li"></div>
+                    <div class="form-group"><label>GitHub / Portfolio</label><input type="url" name="github_portfolio_url" id="mi_est_gh"></div>
+                    <div class="form-group"><label>Instagram</label><input type="url" name="instagram_url" id="mi_est_ig"></div>
+                    <div class="form-group"><label>Descripción Profesional</label><textarea name="descripcion" id="mi_est_desc" rows="3" required></textarea></div>
+                    <hr style="margin: 1rem 0; border: 0; border-top: 1px solid #e2e8f0;">
+                    <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 0.6rem;">Subí archivos solo si querés reemplazar los actuales:</p>
+                    <div class="form-group"><label>Actualizar Foto (.jpg/.png)</label><input type="file" name="foto_perfil" accept=".jpg,.jpeg,.png"></div>
+                    <div class="form-group"><label>Actualizar CV (.pdf)</label><input type="file" name="cv_pdf" accept=".pdf"></div>
+                    <div class="form-group"><label>Actualizar Certificado Regular</label><input type="file" name="certificado_regular"></div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem;">Guardar Mis Cambios</button>
+                </form>
+            </div>
         </section>
     </main>
 
-    <!-- Modal para Editar Estudiante -->
-    <div id="modalEditar" class="modal-overlay">
+    <!-- ========================================== -->
+    <!-- SECCIÓN 3: PANEL DE LA EMPRESA             -->
+    <!-- ========================================== -->
+    <main id="panelEmpresa" class="contenedor oculto">
+        <nav class="panel-nav">
+            <button class="btn btn-primary" onclick="cambiarSubvistaEmp('misOfertas')">📢 Mis Ofertas y Postulantes</button>
+            <button class="btn btn-success" onclick="abrirModalNuevaOferta()">+ Publicar Nueva Oferta</button>
+            <button class="btn btn-dark" onclick="cambiarSubvistaEmp('buscarEstudiantes')">🔍 Buscar Estudiantes / Talentos</button>
+            <button class="btn btn-dark" onclick="cambiarSubvistaEmp('mensajes')">💬 Mensajes con Estudiantes</button>
+            <button class="btn btn-outline" onclick="cambiarSubvistaEmp('perfil')">⚙️ Datos e Imagen de Mi Empresa</button>
+        </nav>
+
+        <section id="empSubOfertas">
+            <h3 style="margin-bottom: 1rem;">Mis Avisos Activos</h3>
+            <div id="gridMisOfertasEmpresa" class="grid-cards"></div>
+        </section>
+
+        <section id="empSubTalentos" class="oculto">
+            <div class="barra-filtros">
+                <input type="text" id="empFiltroQ" placeholder="🔍 Habilidad o nombre (ej. SQL, Java)..." oninput="cargarTalentosParaEmpresa()">
+                <input type="text" id="empFiltroCarrera" placeholder="🎓 Carrera..." oninput="cargarTalentosParaEmpresa()">
+                <input type="text" id="empFiltroInst" placeholder="🏛️ Universidad..." oninput="cargarTalentosParaEmpresa()">
+            </div>
+            <div id="gridTalentosEmpresa" class="grid-cards"></div>
+        </section>
+
+        <section id="empSubMensajes" class="oculto">
+            <h3 style="margin-bottom: 1rem;">Conversaciones con Candidatos</h3>
+            <div id="gridConversacionesEmp" class="grid-cards"></div>
+        </section>
+
+        <!-- Subvista 4: Editar Datos e Imagen de Empresa -->
+        <section id="empSubPerfil" class="oculto">
+            <div class="card" style="max-width: 600px; margin: 0 auto;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                    <img id="previewLogoEmpresa" class="logo-empresa-circular" src="" alt="Logo Empresa">
+                    <h3>Modificar Perfil de la Empresa</h3>
+                </div>
+                <form id="formEditarMiEmpresa" enctype="multipart/form-data">
+                    <div class="form-group"><label>Razón Social</label><input type="text" name="razon_social" id="mi_emp_razon" required></div>
+                    <div class="form-group"><label>CUIT</label><input type="text" name="cuit" id="mi_emp_cuit" required></div>
+                    <div class="form-group"><label>Email de Contacto</label><input type="email" name="email_contacto" id="mi_emp_email" required></div>
+                    <div class="form-group"><label>Nueva Contraseña (opcional)</label><input type="password" name="password" id="mi_emp_pass"></div>
+                    <div class="form-group"><label>Teléfono</label><input type="text" name="telefono" id="mi_emp_tel"></div>
+                    <div class="form-group"><label>Rubro</label><input type="text" name="rubro" id="mi_emp_rubro"></div>
+                    <div class="form-group"><label>Ubicación</label><input type="text" name="ubicacion" id="mi_emp_ubi"></div>
+                    <div class="form-group"><label>Descripción</label><textarea name="descripcion_empresa" id="mi_emp_desc" rows="3"></textarea></div>
+                    <div class="form-group">
+                        <label>Cambiar Logo / Imagen de Perfil (.JPG o .PNG)</label>
+                        <input type="file" name="logo_empresa" accept=".jpg,.jpeg,.png">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem;">Guardar Datos e Imagen</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- SECCIÓN 4: PANEL DEL ADMINISTRADOR (TOTAL) -->
+    <!-- ========================================== -->
+    <main id="panelAdmin" class="contenedor oculto">
+        <div class="barra-filtros" style="text-align: center;">
+            <div><strong id="admStatEst" style="font-size: 1.4rem;">0</strong><br><small>Estudiantes</small></div>
+            <div><strong id="admStatEmp" style="font-size: 1.4rem;">0</strong><br><small>Empresas</small></div>
+            <div><strong id="admStatOf" style="font-size: 1.4rem;">0</strong><br><small>Ofertas</small></div>
+            <div><strong id="admStatPost" style="font-size: 1.4rem;">0</strong><br><small>Postulaciones</small></div>
+        </div>
+
+        <nav class="panel-nav">
+            <button class="btn btn-primary" onclick="cargarVistaAdmin('estudiantes')">🎓 Gestionar Estudiantes</button>
+            <button class="btn btn-primary" onclick="cargarVistaAdmin('empresas')">🏢 Gestionar Empresas</button>
+            <button class="btn btn-primary" onclick="cargarVistaAdmin('ofertas')">📢 Gestionar Ofertas y Postulaciones</button>
+            <button class="btn btn-success" onclick="abrirModalNuevaOferta()">+ Crear Oferta (Admin)</button>
+        </nav>
+
+        <div id="contenedorAdminPrincipal" class="grid-cards"></div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MODALES GLOBALES (POSTULANTES, OFERTA, CHAT)-->
+    <!-- ========================================== -->
+    <div id="modalOferta" class="modal-overlay">
         <div class="modal-content">
-            <h3>Editar Perfil de Estudiante</h3>
-            <form id="formEditar">
-                <input type="hidden" id="edit_id">
+            <h3 style="margin-bottom: 1rem;">Publicar Oferta Laboral</h3>
+            <form id="formNuevaOferta">
+                <div class="form-group" id="grupoSelectEmpresaAdmin">
+                    <label>Empresa *</label>
+                    <select id="of_id_empresa"></select>
+                </div>
+                <div class="form-group"><label>Título del Puesto *</label><input type="text" id="of_titulo" required></div>
+                <div class="form-group"><label>Carrera Objetivo *</label><input type="text" id="of_carrera" required></div>
                 <div class="form-group">
-                    <label>Nombre y Apellido</label>
-                    <input type="text" id="edit_nombre" required>
+                    <label>Modalidad *</label>
+                    <select id="of_modalidad">
+                        <option value="Presencial">Presencial</option>
+                        <option value="Híbrido">Híbrido</option>
+                        <option value="Remoto">Remoto</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>Institución / Universidad</label>
-                    <input type="text" id="edit_institucion" required>
+                    <label>Tipo de Puesto *</label>
+                    <select id="of_tipo">
+                        <option value="Pasantía">Pasantía</option>
+                        <option value="Part-Time">Part-Time</option>
+                        <option value="Full-Time">Full-Time</option>
+                    </select>
                 </div>
-                <div class="form-group">
-                    <label>Carrera</label>
-                    <input type="text" id="edit_carrera" required>
-                </div>
-                <div class="form-group">
-                    <label>Dirección</label>
-                    <input type="text" id="edit_direccion" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="edit_email" required>
-                </div>
-                <div class="form-group">
-                    <label>Teléfono</label>
-                    <input type="text" id="edit_telefono" required>
-                </div>
-                <div class="form-group">
-                    <label>LinkedIn URL</label>
-                    <input type="url" id="edit_linkedin">
-                </div>
-                <div class="form-group">
-                    <label>GitHub / Portfolio URL</label>
-                    <input type="url" id="edit_github">
-                </div>
-                <div class="form-group">
-                    <label>Instagram URL</label>
-                    <input type="url" id="edit_instagram">
-                </div>
-                <div class="form-group">
-                    <label>Descripción / Perfil Profesional</label>
-                    <textarea id="edit_descripcion" rows="3" required></textarea>
-                </div>
-                <div class="modal-botones">
-                    <button type="submit" class="btn-guardar">Guardar Cambios</button>
-                    <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+                <div class="form-group"><label>Descripción y Requisitos *</label><textarea id="of_descripcion" rows="4" required></textarea></div>
+                <div style="display: flex; gap: 0.6rem;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">Publicar</button>
+                    <button type="button" class="btn btn-outline" style="flex: 1;" onclick="cerrarModal('modalOferta')">Cancelar</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <div id="modalPostulantes" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="tituloModalPostulantes" style="margin-bottom: 1rem;">Candidatos Postulados</h3>
+            <div id="listaPostulantesModal"></div>
+            <button class="btn btn-outline" style="width: 100%; margin-top: 1rem;" onclick="cerrarModal('modalPostulantes')">Cerrar</button>
+        </div>
+    </div>
+
+    <div id="modalChat" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="tituloChat" style="margin-bottom: 0.8rem;">Mensajería Directa</h3>
+            <div id="cajaMensajes" class="chat-box"></div>
+            <form id="formEnviarMensaje" style="display: flex; gap: 0.5rem;">
+                <input type="hidden" id="chat_id_estudiante">
+                <input type="hidden" id="chat_id_empresa">
+                <input type="text" id="chat_texto" placeholder="Escribí tu mensaje acá..." style="flex: 1; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 6px;" required>
+                <button type="submit" class="btn btn-primary">Enviar ➢</button>
+            </form>
+            <button class="btn btn-outline" style="width: 100%; margin-top: 0.8rem;" onclick="cerrarModal('modalChat')">Cerrar Chat</button>
+        </div>
+    </div>
+
     <script>
-        let listaEstudiantes = [];
+        let sesionActual = JSON.parse(localStorage.getItem('uniempleos_sesion')) || null;
+        const LOGO_DEFAULT = 'https://ui-avatars.com/api/?background=2563eb&color=fff&name=Empresa';
 
-        const inputBusqueda = document.getElementById('filtroBusqueda');
-        const inputCarrera = document.getElementById('filtroCarrera');
-        const inputInstitucion = document.getElementById('filtroInstitucion');
-        const btnLimpiar = document.getElementById('btnLimpiar');
-        const contador = document.getElementById('contadorEstudiantes');
+        function obtenerLogoEmpresa(url, nombre) {
+            if (url) return url;
+            return `https://ui-avatars.com/api/?background=1e293b&color=38bdf8&name=${encodeURIComponent(nombre || 'E')}`;
+        }
 
-        async function cargarEstudiantes() {
-            const contenedor = document.getElementById('contenedorEstudiantes');
-            const params = new URLSearchParams();
+// ==========================================
+        // CARRUSELES CON MOVIMIENTO LENTO Y ARMÓNICO
+        // ==========================================
+        const estadoCarruseles = {
+            trackOfertas: { pausado: false, posicion: 0, velocidad: 0.45 },
+            trackEmpresas: { pausado: false, posicion: 0, velocidad: 0.4 }
+        };
+        let animacionIniciada = false;
 
-            if (inputBusqueda.value.trim()) params.append('q', inputBusqueda.value.trim());
-            if (inputCarrera.value.trim()) params.append('carrera', inputCarrera.value.trim());
-            if (inputInstitucion.value.trim()) params.append('institucion', inputInstitucion.value.trim());
-
-            try {
-                const res = await fetch(`/api/estudiantes?${params.toString()}`);
-                listaEstudiantes = await res.json();
-
-                contenedor.innerHTML = '';
-                contador.textContent = listaEstudiantes.length;
-
-                if (listaEstudiantes.length === 0) {
-                    contenedor.innerHTML = '<p>No se encontraron estudiantes con esos criterios.</p>';
-                    return;
-                }
-
-                listaEstudiantes.forEach(est => {
-                    const card = document.createElement('article');
-                    card.className = 'card-estudiante';
-                    card.innerHTML = `
-                        <div class="header-perfil">
-                            <img src="${est.foto_perfil_url}" alt="Foto de ${est.nombre_completo}" class="foto-perfil">
-                            <div class="info-basica">
-                                <h3>${est.nombre_completo}</h3>
-                                <p>🎓 ${est.carrera}</p>
-                                <p style="font-weight: 400;">🏛️ ${est.institucion}</p>
-                            </div>
-                        </div>
-
-                        <p style="font-size: 0.9rem; color: #334155;">${est.descripcion}</p>
-
-                        <div class="datos-contacto">
-                            <div>📍 <strong>Dirección:</strong> ${est.direccion}</div>
-                            <div>✉️ <strong>Email:</strong> ${est.email}</div>
-                            <div>📞 <strong>Tel:</strong> ${est.telefono}</div>
-                        </div>
-
-                        <div class="redes">
-                            ${est.linkedin_url ? `<a href="${est.linkedin_url}" target="_blank">LinkedIn ↗</a>` : ''}
-                            ${est.github_portfolio_url ? `<a href="${est.github_portfolio_url}" target="_blank">GitHub/Portfolio ↗</a>` : ''}
-                            ${est.instagram_url ? `<a href="${est.instagram_url}" target="_blank">Instagram ↗</a>` : ''}
-                        </div>
-
-                        <div class="archivos-acciones">
-                            <a href="${est.cv_pdf_url}" target="_blank" class="btn-archivo btn-cv">📄 Ver CV (PDF)</a>
-                            <a href="${est.certificado_regular_url}" target="_blank" class="btn-archivo btn-cert">📎 Certificado</a>
-                        </div>
-
-                        <div class="acciones-crud">
-                            <button class="btn-editar" onclick="abrirModalEditar(${est.id_estudiante})">✏️ Editar</button>
-                            <button class="btn-eliminar" onclick="eliminarEstudiante(${est.id_estudiante}, '${est.nombre_completo}')">🗑️ Eliminar</button>
-                        </div>
-                    `;
-                    contenedor.appendChild(card);
-                });
-            } catch (err) {
-                contenedor.innerHTML = '<p>Error al cargar los estudiantes desde el servidor.</p>';
+        function moverCarrusel(idTrack, distancia) {
+            const track = document.getElementById(idTrack);
+            if (!track) return;
+            track.scrollBy({ left: distancia, behavior: 'smooth' });
+            if (estadoCarruseles[idTrack]) {
+                setTimeout(() => {
+                    estadoCarruseles[idTrack].posicion = track.scrollLeft;
+                }, 350);
             }
         }
 
-        // Eventos para filtrar en tiempo real mientras escribís
-        inputBusqueda.addEventListener('input', cargarEstudiantes);
-        inputCarrera.addEventListener('input', cargarEstudiantes);
-        inputInstitucion.addEventListener('input', cargarEstudiantes);
+        function iniciarMovimientoArmonico() {
+            if (animacionIniciada) return;
+            animacionIniciada = true;
 
-        btnLimpiar.addEventListener('click', () => {
-            inputBusqueda.value = '';
-            inputCarrera.value = '';
-            inputInstitucion.value = '';
-            cargarEstudiantes();
-        });
+            ['trackOfertas', 'trackEmpresas'].forEach(id => {
+                const track = document.getElementById(id);
+                if (!track) return;
+                track.addEventListener('mouseenter', () => estadoCarruseles[id].pausado = true);
+                track.addEventListener('mouseleave', () => {
+                    estadoCarruseles[id].posicion = track.scrollLeft;
+                    estadoCarruseles[id].pausado = false;
+                });
+            });
 
-        // Funciones para Editar
-        function abrirModalEditar(id) {
-            const est = listaEstudiantes.find(e => e.id_estudiante === id);
-            if (!est) return;
+            function animarFrame() {
+                ['trackOfertas', 'trackEmpresas'].forEach(id => {
+                    const track = document.getElementById(id);
+                    const cfg = estadoCarruseles[id];
+                    if (!track || cfg.pausado) return;
 
-            document.getElementById('edit_id').value = est.id_estudiante;
-            document.getElementById('edit_nombre').value = est.nombre_completo;
-            document.getElementById('edit_institucion').value = est.institucion;
-            document.getElementById('edit_carrera').value = est.carrera;
-            document.getElementById('edit_direccion').value = est.direccion;
-            document.getElementById('edit_email').value = est.email;
-            document.getElementById('edit_telefono').value = est.telefono;
-            document.getElementById('edit_linkedin').value = est.linkedin_url || '';
-            document.getElementById('edit_github').value = est.github_portfolio_url || '';
-            document.getElementById('edit_instagram').value = est.instagram_url || '';
-            document.getElementById('edit_descripcion').value = est.descripcion;
+                    // Solo deslizar si el contenido supera el ancho visible
+                    if (track.scrollWidth > track.clientWidth) {
+                        cfg.posicion += cfg.velocidad;
+                        // Si llegó a la mitad (donde empieza la copia infinita), reinicia sin salto visual
+                        if (cfg.posicion >= track.scrollWidth / 2) {
+                            cfg.posicion = 0;
+                        }
+                        track.scrollLeft = cfg.posicion;
+                    }
+                });
+                requestAnimationFrame(animarFrame);
+            }
 
-            document.getElementById('modalEditar').style.display = 'flex';
+            requestAnimationFrame(animarFrame);
         }
 
-        function cerrarModal() {
-            document.getElementById('modalEditar').style.display = 'none';
+        async function cargarCarruselesGlobales() {
+            // 1. Carrusel de Ofertas
+            try {
+                const resOf = await fetch('/api/ofertas');
+                const ofertas = await resOf.json();
+                const trackOf = document.getElementById('trackOfertas');
+
+                if (!ofertas.length) {
+                    trackOf.innerHTML = '<p style="color:#64748b;">Aún no hay ofertas publicadas.</p>';
+                } else {
+                    // Si hay 2 o más ofertas, repetimos la tira para lograr el bucle continuo infinito
+                    const listaOf = ofertas.length >= 2 ? [...ofertas, ...ofertas, ...ofertas] : ofertas;
+                    trackOf.innerHTML = listaOf.map(of => `
+                        <div class="item-carrusel-oferta">
+                            <div style="display:flex; align-items:center; gap:0.6rem;">
+                                <img src="${obtenerLogoEmpresa(of.logo_url, of.razon_social)}" class="logo-empresa-circular" style="width:40px; height:40px;">
+                                <div>
+                                    <h4 style="font-size:0.95rem; color:#0f172a;">${of.titulo}</h4>
+                                    <small style="color:#475569; font-weight:600;">${of.razon_social}</small>
+                                </div>
+                            </div>
+                            <p style="font-size:0.82rem; color:#334155; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+                                ${of.descripcion}
+                            </p>
+                            <div class="badges" style="margin-top:auto;">
+                                <span class="badge">🎓 ${of.carrera_objetivo}</span>
+                                <span class="badge">📍 ${of.modalidad}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) { console.error(e); }
+
+            // 2. Carrusel de Empresas
+            try {
+                const resEmp = await fetch('/api/empresas');
+                const empresas = await resEmp.json();
+                const trackEmp = document.getElementById('trackEmpresas');
+
+                if (!empresas.length) {
+                    trackEmp.innerHTML = '<p style="color:#64748b;">Aún no hay empresas registradas.</p>';
+                } else {
+                    const listaEmp = empresas.length >= 2 ? [...empresas, ...empresas, ...empresas] : empresas;
+                    trackEmp.innerHTML = listaEmp.map(emp => `
+                        <div class="item-carrusel-empresa">
+                            <img src="${obtenerLogoEmpresa(emp.logo_url, emp.razon_social)}" class="logo-empresa-circular" alt="${emp.razon_social}">
+                            <h4 style="font-size:0.95rem; color:#0f172a;">${emp.razon_social}</h4>
+                            <span class="badge">${emp.rubro || 'Sector General'}</span>
+                            <small style="color:#64748b; font-size:0.78rem;">📍 ${emp.ubicacion || 'Argentina'}</small>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) { console.error(e); }
+
+            iniciarMovimientoArmonico();
         }
 
-        document.getElementById('formEditar').addEventListener('submit', async (e) => {
+        function mostrarTabAuth(vista, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('formLogin').classList.add('oculto');
+            document.getElementById('formRegEstudiante').classList.add('oculto');
+            document.getElementById('formRegEmpresa').classList.add('oculto');
+
+            if (vista === 'login') document.getElementById('formLogin').classList.remove('oculto');
+            if (vista === 'regEstudiante') document.getElementById('formRegEstudiante').classList.remove('oculto');
+            if (vista === 'regEmpresa') document.getElementById('formRegEmpresa').classList.remove('oculto');
+        }
+
+        function cerrarModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // ==========================================
+        // INICIO DE SESIÓN Y CONTROL DE PANELES
+        // ==========================================
+        document.getElementById('formLogin').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const id = document.getElementById('edit_id').value;
-
-            const datosActualizados = {
-                nombre_completo: document.getElementById('edit_nombre').value,
-                institucion: document.getElementById('edit_institucion').value,
-                carrera: document.getElementById('edit_carrera').value,
-                direccion: document.getElementById('edit_direccion').value,
-                email: document.getElementById('edit_email').value,
-                telefono: document.getElementById('edit_telefono').value,
-                linkedin_url: document.getElementById('edit_linkedin').value,
-                github_portfolio_url: document.getElementById('edit_github').value,
-                instagram_url: document.getElementById('edit_instagram').value,
-                descripcion: document.getElementById('edit_descripcion').value
+            const body = {
+                rol: document.getElementById('login_rol').value,
+                email: document.getElementById('login_email').value,
+                password: document.getElementById('login_password').value
             };
 
-            const res = await fetch(`/api/estudiantes/${id}`, {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+
+            if (!res.ok) return alert(data.error || 'Error al iniciar sesión');
+
+            sesionActual = data;
+            localStorage.setItem('uniempleos_sesion', JSON.stringify(sesionActual));
+            iniciarInterfazSegunRol();
+        });
+
+        function cerrarSesion() {
+            localStorage.removeItem('uniempleos_sesion');
+            sesionActual = null;
+            location.reload();
+        }
+
+        function iniciarInterfazSegunRol() {
+            cargarCarruselesGlobales();
+            if (!sesionActual) return;
+
+            document.getElementById('vistaAuth').classList.add('oculto');
+            document.getElementById('userBar').classList.remove('oculto');
+            document.getElementById('labelRol').textContent = sesionActual.rol;
+            const avatarHeader = document.getElementById('avatarHeaderUsuario');
+
+            if (sesionActual.rol === 'estudiante') {
+                document.getElementById('labelNombreUsuario').textContent = sesionActual.usuario.nombre_completo;
+                if (sesionActual.usuario.foto_perfil_url) {
+                    avatarHeader.src = sesionActual.usuario.foto_perfil_url;
+                    avatarHeader.classList.remove('oculto');
+                }
+                document.getElementById('panelEstudiante').classList.remove('oculto');
+                cargarOfertasEstudiante();
+                precargarFormularioEstudiante();
+            } else if (sesionActual.rol === 'empresa') {
+                document.getElementById('labelNombreUsuario').textContent = sesionActual.usuario.razon_social;
+                avatarHeader.src = obtenerLogoEmpresa(sesionActual.usuario.logo_url, sesionActual.usuario.razon_social);
+                avatarHeader.classList.remove('oculto');
+                document.getElementById('panelEmpresa').classList.remove('oculto');
+                cargarMisOfertasEmpresa();
+                precargarFormularioEmpresa();
+            } else if (sesionActual.rol === 'admin') {
+                document.getElementById('labelNombreUsuario').textContent = sesionActual.usuario.nombre;
+                document.getElementById('panelAdmin').classList.remove('oculto');
+                cargarEstadisticasAdmin();
+                cargarVistaAdmin('estudiantes');
+            }
+        }
+
+        // ==========================================
+        // REGISTRO DE ESTUDIANTE Y EMPRESA
+        // ==========================================
+        document.getElementById('formRegEstudiante').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const res = await fetch('/api/estudiantes', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (res.ok) {
+                alert('¡Cuenta de estudiante creada! Ahora podés iniciar sesión.');
+                e.target.reset();
+                document.querySelector('.tab-btn').click();
+            } else {
+                alert(data.error || 'Error al registrar estudiante');
+            }
+        });
+
+        document.getElementById('formRegEmpresa').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const res = await fetch('/api/empresas', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            if (res.ok) {
+                alert('¡Cuenta de empresa creada con éxito! Ahora podés iniciar sesión.');
+                e.target.reset();
+                cargarCarruselesGlobales();
+                document.querySelector('.tab-btn').click();
+            } else {
+                alert(data.error || 'Error al registrar empresa');
+            }
+        });
+
+        // ==========================================
+        // LÓGICA DEL PANEL DE ESTUDIANTE
+        // ==========================================
+        function cambiarSubvistaEst(sub) {
+            ['estSubOfertas', 'estSubPostulaciones', 'estSubMensajes', 'estSubPerfil'].forEach(id => {
+                document.getElementById(id).classList.add('oculto');
+            });
+            if (sub === 'ofertas') { document.getElementById('estSubOfertas').classList.remove('oculto'); cargarOfertasEstudiante(); }
+            if (sub === 'postulaciones') { document.getElementById('estSubPostulaciones').classList.remove('oculto'); cargarMisPostulacionesEst(); }
+            if (sub === 'mensajes') { document.getElementById('estSubMensajes').classList.remove('oculto'); cargarConversacionesEst(); }
+            if (sub === 'perfil') { document.getElementById('estSubPerfil').classList.remove('oculto'); precargarFormularioEstudiante(); }
+        }
+
+        async function cargarOfertasEstudiante() {
+            const carrera = document.getElementById('estFiltroCarrera').value.trim();
+            const modalidad = document.getElementById('estFiltroModalidad').value;
+            const params = new URLSearchParams();
+            if (carrera) params.append('carrera', carrera);
+            if (modalidad) params.append('modalidad', modalidad);
+
+            const res = await fetch(`/api/ofertas?${params.toString()}`);
+            const ofertas = await res.json();
+            const grid = document.getElementById('gridOfertasEstudiante');
+            grid.innerHTML = ofertas.length ? '' : '<p>No hay ofertas disponibles con esos filtros.</p>';
+
+            ofertas.forEach(of => {
+                const nombreEmpLimpio = of.razon_social.replace(/'/g, "\\'");
+                grid.innerHTML += `
+                    <article class="card">
+                        <div style="display:flex; align-items:center; gap:0.8rem;">
+                            <img src="${obtenerLogoEmpresa(of.logo_url, of.razon_social)}" class="logo-empresa-circular" style="width:48px; height:48px;">
+                            <div>
+                                <h3>${of.titulo}</h3>
+                                <p style="color:#475569; font-weight:600; font-size:0.88rem;">🏢 ${of.razon_social} (${of.ubicacion || 'Sin ubicación'})</p>
+                            </div>
+                        </div>
+                        <p style="font-size:0.9rem;">${of.descripcion}</p>
+                        <div class="badges">
+                            <span class="badge">🎓 ${of.carrera_objetivo}</span>
+                            <span class="badge">📍 ${of.modalidad}</span>
+                            <span class="badge">⏱️ ${of.tipo_puesto}</span>
+                        </div>
+                        <div style="display:flex; gap:0.5rem; margin-top:auto; padding-top:0.8rem;">
+                            <button class="btn btn-primary" style="flex:1;" onclick="postularmeDirecto(${of.id_oferta})">✋ Postularme</button>
+                            <button class="btn btn-dark" style="flex:1;" onclick="abrirChat(${sesionActual.usuario.id_estudiante}, ${of.id_empresa}, '${nombreEmpLimpio}')">💬 Enviar Mensaje</button>
+                        </div>
+                    </article>
+                `;
+            });
+        }
+
+        async function postularmeDirecto(idOferta) {
+            const res = await fetch('/api/postulaciones', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_oferta: idOferta, id_estudiante: sesionActual.usuario.id_estudiante })
+            });
+            const data = await res.json();
+            if (res.ok) alert('¡Te postulaste exitosamente! Podés ver si la empresa leyó tu postulación en "Mis Postulaciones".');
+            else alert(data.error);
+        }
+
+        async function cargarMisPostulacionesEst() {
+            const res = await fetch(`/api/estudiantes/${sesionActual.usuario.id_estudiante}/postulaciones`);
+            const postulaciones = await res.json();
+            const grid = document.getElementById('gridMisPostulaciones');
+            grid.innerHTML = postulaciones.length ? '' : '<p>Todavía no te postulaste a ninguna oferta.</p>';
+
+            postulaciones.forEach(p => {
+                const nombreEmpLimpio = p.razon_social.replace(/'/g, "\\'");
+                const etiquetaLectura = p.leido_por_empresa
+                    ? `<span class="badge badge-visto">👁️ Visto por la empresa ${p.fecha_lectura ? '(' + new Date(p.fecha_lectura).toLocaleDateString() + ')' : ''}</span>`
+                    : `<span class="badge badge-no-visto">⏳ Aún no leído por la empresa</span>`;
+
+                grid.innerHTML += `
+                    <article class="card">
+                        <h3>${p.titulo}</h3>
+                        <p style="font-weight:600; color:#475569;">🏢 ${p.razon_social}</p>
+                        <div class="badges">
+                            <span class="badge">Estado: <strong>${p.estado}</strong></span>
+                            ${etiquetaLectura}
+                        </div>
+                        <button class="btn btn-dark" style="margin-top:0.5rem;" onclick="abrirChat(${sesionActual.usuario.id_estudiante}, ${p.id_empresa}, '${nombreEmpLimpio}')">💬 Mensajear a ${p.razon_social}</button>
+                    </article>
+                `;
+            });
+        }
+
+        async function cargarConversacionesEst() {
+            const res = await fetch(`/api/conversaciones?rol=estudiante&id=${sesionActual.usuario.id_estudiante}`);
+            const convs = await res.json();
+            const grid = document.getElementById('gridConversacionesEst');
+            grid.innerHTML = convs.length ? '' : '<p>No tenés conversaciones iniciadas todavía.</p>';
+            convs.forEach(c => {
+                const nombreLimpio = c.razon_social.replace(/'/g, "\\'");
+                grid.innerHTML += `
+                    <div class="card">
+                        <h4>🏢 ${c.razon_social}</h4>
+                        <p style="font-size:0.85rem; color:#64748b;">${c.rubro || ''} - ${c.email_contacto}</p>
+                        <button class="btn btn-primary" onclick="abrirChat(${sesionActual.usuario.id_estudiante}, ${c.id_empresa}, '${nombreLimpio}')">💬 Abrir Conversación</button>
+                    </div>
+                `;
+            });
+        }
+
+        function precargarFormularioEstudiante() {
+            const u = sesionActual.usuario;
+            document.getElementById('mi_est_nombre').value = u.nombre_completo || '';
+            document.getElementById('mi_est_inst').value = u.institucion || '';
+            document.getElementById('mi_est_carrera').value = u.carrera || '';
+            document.getElementById('mi_est_dir').value = u.direccion || '';
+            document.getElementById('mi_est_email').value = u.email || '';
+            document.getElementById('mi_est_tel').value = u.telefono || '';
+            document.getElementById('mi_est_li').value = u.linkedin_url || '';
+            document.getElementById('mi_est_gh').value = u.github_portfolio_url || '';
+            document.getElementById('mi_est_ig').value = u.instagram_url || '';
+            document.getElementById('mi_est_desc').value = u.descripcion || '';
+        }
+
+        document.getElementById('formEditarMiPerfilEst').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const res = await fetch(`/api/estudiantes/${sesionActual.usuario.id_estudiante}`, {
+                method: 'PUT',
+                body: formData
+            });
+            const data = await res.json();
+            if (res.ok) {
+                sesionActual.usuario = data.usuario;
+                localStorage.setItem('uniempleos_sesion', JSON.stringify(sesionActual));
+                document.getElementById('labelNombreUsuario').textContent = data.usuario.nombre_completo;
+                document.getElementById('avatarHeaderUsuario').src = data.usuario.foto_perfil_url;
+                alert('¡Tus datos y archivos fueron actualizados!');
+            } else {
+                alert(data.error || 'Error al actualizar');
+            }
+        });
+
+        // ==========================================
+        // LÓGICA DEL PANEL DE EMPRESA
+        // ==========================================
+        function cambiarSubvistaEmp(sub) {
+            ['empSubOfertas', 'empSubTalentos', 'empSubMensajes', 'empSubPerfil'].forEach(id => {
+                document.getElementById(id).classList.add('oculto');
+            });
+            if (sub === 'misOfertas') { document.getElementById('empSubOfertas').classList.remove('oculto'); cargarMisOfertasEmpresa(); }
+            if (sub === 'buscarEstudiantes') { document.getElementById('empSubTalentos').classList.remove('oculto'); cargarTalentosParaEmpresa(); }
+            if (sub === 'mensajes') { document.getElementById('empSubMensajes').classList.remove('oculto'); cargarConversacionesEmp(); }
+            if (sub === 'perfil') { document.getElementById('empSubPerfil').classList.remove('oculto'); precargarFormularioEmpresa(); }
+        }
+
+        async function cargarMisOfertasEmpresa() {
+            const res = await fetch(`/api/ofertas?id_empresa=${sesionActual.usuario.id_empresa}`);
+            const ofertas = await res.json();
+            const grid = document.getElementById('gridMisOfertasEmpresa');
+            grid.innerHTML = ofertas.length ? '' : '<p>Todavía no publicaste ofertas laborales.</p>';
+
+            ofertas.forEach(of => {
+                const tituloLimpio = of.titulo.replace(/'/g, "\\'");
+                grid.innerHTML += `
+                    <article class="card">
+                        <h3>${of.titulo}</h3>
+                        <p style="font-size:0.9rem;">${of.descripcion}</p>
+                        <div class="badges">
+                            <span class="badge">🎓 ${of.carrera_objetivo}</span>
+                            <span class="badge">📍 ${of.modalidad}</span>
+                            <span class="badge">⏱️ ${of.tipo_puesto}</span>
+                        </div>
+                        <div style="display:flex; gap:0.5rem; margin-top:auto; padding-top:0.8rem;">
+                            <button class="btn btn-primary" style="flex:1;" onclick="verCandidatosDeOferta(${of.id_oferta}, '${tituloLimpio}')">👥 Ver Postulantes</button>
+                            <button class="btn btn-danger" onclick="eliminarOferta(${of.id_oferta})">🗑️</button>
+                        </div>
+                    </article>
+                `;
+            });
+        }
+
+        async function cargarTalentosParaEmpresa() {
+            const q = document.getElementById('empFiltroQ').value.trim();
+            const carrera = document.getElementById('empFiltroCarrera').value.trim();
+            const inst = document.getElementById('empFiltroInst').value.trim();
+            const params = new URLSearchParams();
+            if (q) params.append('q', q);
+            if (carrera) params.append('carrera', carrera);
+            if (inst) params.append('institucion', inst);
+
+            const res = await fetch(`/api/estudiantes?${params.toString()}`);
+            const estudiantes = await res.json();
+            const grid = document.getElementById('gridTalentosEmpresa');
+            grid.innerHTML = estudiantes.length ? '' : '<p>No se encontraron estudiantes con esos filtros.</p>';
+
+            estudiantes.forEach(est => {
+                const nombreLimpio = est.nombre_completo.replace(/'/g, "\\'");
+                grid.innerHTML += `
+                    <article class="card">
+                        <div style="display:flex; align-items:center; gap:0.9rem;">
+                            <img src="${est.foto_perfil_url}" class="foto-avatar">
+                            <div>
+                                <h3>${est.nombre_completo}</h3>
+                                <p style="font-size:0.85rem; font-weight:600; color:#475569;">🎓 ${est.carrera}</p>
+                                <p style="font-size:0.8rem; color:#64748b;">🏛️ ${est.institucion}</p>
+                            </div>
+                        </div>
+                        <p style="font-size:0.88rem;">${est.descripcion}</p>
+                        <div style="display:flex; gap:0.4rem;">
+                            <a href="${est.cv_pdf_url}" target="_blank" class="btn btn-outline" style="flex:1; text-align:center;">📄 CV (PDF)</a>
+                            <a href="${est.certificado_regular_url}" target="_blank" class="btn btn-outline" style="flex:1; text-align:center;">📎 Certificado</a>
+                        </div>
+                        <button class="btn btn-primary" onclick="abrirChat(${est.id_estudiante}, ${sesionActual.usuario.id_empresa}, '${nombreLimpio}')">💬 Enviar Mensaje Directo</button>
+                    </article>
+                `;
+            });
+        }
+
+        async function cargarConversacionesEmp() {
+            const res = await fetch(`/api/conversaciones?rol=empresa&id=${sesionActual.usuario.id_empresa}`);
+            const convs = await res.json();
+            const grid = document.getElementById('gridConversacionesEmp');
+            grid.innerHTML = convs.length ? '' : '<p>No tenés conversaciones activas con estudiantes.</p>';
+            convs.forEach(c => {
+                const nombreLimpio = c.nombre_completo.replace(/'/g, "\\'");
+                grid.innerHTML += `
+                    <div class="card">
+                        <div style="display:flex; align-items:center; gap:0.8rem;">
+                            <img src="${c.foto_perfil_url}" class="foto-avatar" style="width:45px; height:45px;">
+                            <div>
+                                <h4>${c.nombre_completo}</h4>
+                                <p style="font-size:0.82rem; color:#64748b;">🎓 ${c.carrera}</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="abrirChat(${c.id_estudiante}, ${sesionActual.usuario.id_empresa}, '${nombreLimpio}')">💬 Abrir Chat</button>
+                    </div>
+                `;
+            });
+        }
+
+        function precargarFormularioEmpresa() {
+            const u = sesionActual.usuario;
+            document.getElementById('previewLogoEmpresa').src = obtenerLogoEmpresa(u.logo_url, u.razon_social);
+            document.getElementById('mi_emp_razon').value = u.razon_social || '';
+            document.getElementById('mi_emp_cuit').value = u.cuit || '';
+            document.getElementById('mi_emp_email').value = u.email_contacto || '';
+            document.getElementById('mi_emp_tel').value = u.telefono || '';
+            document.getElementById('mi_emp_rubro').value = u.rubro || '';
+            document.getElementById('mi_emp_ubi').value = u.ubicacion || '';
+            document.getElementById('mi_emp_desc').value = u.descripcion_empresa || '';
+        }
+
+        document.getElementById('formEditarMiEmpresa').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const res = await fetch(`/api/empresas/${sesionActual.usuario.id_empresa}`, {
+                method: 'PUT',
+                body: formData
+            });
+            const data = await res.json();
+            if (res.ok) {
+                sesionActual.usuario = data.usuario;
+                localStorage.setItem('uniempleos_sesion', JSON.stringify(sesionActual));
+                document.getElementById('labelNombreUsuario').textContent = data.usuario.razon_social;
+                const nuevoLogo = obtenerLogoEmpresa(data.usuario.logo_url, data.usuario.razon_social);
+                document.getElementById('avatarHeaderUsuario').src = nuevoLogo;
+                document.getElementById('previewLogoEmpresa').src = nuevoLogo;
+                cargarCarruselesGlobales();
+                alert('¡Datos e imagen de la empresa actualizados!');
+            } else {
+                alert(data.error || 'Error al actualizar la empresa');
+            }
+        });
+
+        // ==========================================
+        // OFERTAS Y GESTIÓN DE POSTULANTES
+        // ==========================================
+        async function abrirModalNuevaOferta() {
+            const grupoEmp = document.getElementById('grupoSelectEmpresaAdmin');
+            const selectEmp = document.getElementById('of_id_empresa');
+
+            if (sesionActual.rol === 'empresa') {
+                grupoEmp.classList.add('oculto');
+                selectEmp.innerHTML = `<option value="${sesionActual.usuario.id_empresa}" selected>Mi Empresa</option>`;
+            } else {
+                grupoEmp.classList.remove('oculto');
+                const res = await fetch('/api/empresas');
+                const empresas = await res.json();
+                if (!empresas.length) return alert('Registrá primero una empresa.');
+                selectEmp.innerHTML = empresas.map(e => `<option value="${e.id_empresa}">${e.razon_social}</option>`).join('');
+            }
+            document.getElementById('modalOferta').style.display = 'flex';
+        }
+
+        document.getElementById('formNuevaOferta').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = {
+                id_empresa: document.getElementById('of_id_empresa').value,
+                titulo: document.getElementById('of_titulo').value,
+                carrera_objetivo: document.getElementById('of_carrera').value,
+                modalidad: document.getElementById('of_modalidad').value,
+                tipo_puesto: document.getElementById('of_tipo').value,
+                descripcion: document.getElementById('of_descripcion').value
+            };
+            const res = await fetch('/api/ofertas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (res.ok) {
+                e.target.reset();
+                cerrarModal('modalOferta');
+                cargarCarruselesGlobales();
+                if (sesionActual.rol === 'empresa') cargarMisOfertasEmpresa();
+                if (sesionActual.rol === 'admin') { cargarVistaAdmin('ofertas'); cargarEstadisticasAdmin(); }
+            }
+        });
+
+        async function verCandidatosDeOferta(idOferta, titulo) {
+            document.getElementById('tituloModalPostulantes').textContent = `Postulantes: ${titulo}`;
+            const lista = document.getElementById('listaPostulantesModal');
+            lista.innerHTML = '<p>Cargando y marcando como leídos...</p>';
+            document.getElementById('modalPostulantes').style.display = 'flex';
+
+            const res = await fetch(`/api/ofertas/${idOferta}/postulantes?marcar_leido=true`);
+            const postulantes = await res.json();
+
+            if (!postulantes.length) {
+                lista.innerHTML = '<p style="color:#64748b;">Todavía no hay postulantes en esta oferta.</p>';
+                return;
+            }
+
+            lista.innerHTML = '';
+            postulantes.forEach(p => {
+                const nombreLimpio = p.nombre_completo.replace(/'/g, "\\'");
+                const idEmpChat = sesionActual.rol === 'empresa' ? sesionActual.usuario.id_empresa : 1;
+                lista.innerHTML += `
+                    <div style="border:1px solid #e2e8f0; border-radius:8px; padding:0.9rem; margin-bottom:0.7rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.8rem;">
+                        <div style="display:flex; align-items:center; gap:0.8rem;">
+                            <img src="${p.foto_perfil_url}" class="foto-avatar" style="width:48px; height:48px;">
+                            <div>
+                                <strong>${p.nombre_completo}</strong>
+                                <div style="font-size:0.8rem; color:#475569;">🎓 ${p.carrera} (${p.institucion})</div>
+                                <div style="margin-top:0.3rem;">
+                                    <a href="${p.cv_pdf_url}" target="_blank" style="font-size:0.8rem; color:#2563eb; font-weight:600; margin-right:0.6rem;">📄 Ver CV</a>
+                                    <a href="${p.certificado_regular_url}" target="_blank" style="font-size:0.8rem; color:#2563eb; font-weight:600;">📎 Certificado</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:0.4rem;">
+                            <select onchange="cambiarEstadoPostulacion(${p.id_postulacion}, this.value)" style="padding:0.4rem; border-radius:6px; font-weight:600;">
+                                <option value="Pendiente" ${p.estado === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                                <option value="En revisión" ${p.estado === 'En revisión' ? 'selected' : ''}>🔍 En revisión</option>
+                                <option value="Entrevista" ${p.estado === 'Entrevista' ? 'selected' : ''}>🗣️ Entrevista</option>
+                                <option value="Aceptado" ${p.estado === 'Aceptado' ? 'selected' : ''}>✅ Aceptado</option>
+                                <option value="Rechazado" ${p.estado === 'Rechazado' ? 'selected' : ''}>❌ Rechazado</option>
+                            </select>
+                            ${sesionActual.rol === 'empresa' ? `<button class="btn btn-dark" onclick="abrirChat(${p.id_estudiante}, ${idEmpChat}, '${nombreLimpio}')">💬 Chat</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function cambiarEstadoPostulacion(idPostulacion, estado) {
+            await fetch(`/api/postulaciones/${idPostulacion}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datosActualizados)
+                body: JSON.stringify({ estado })
+            });
+        }
+
+        async function eliminarOferta(id) {
+            if (!confirm('¿Eliminar esta oferta laboral?')) return;
+            await fetch(`/api/ofertas/${id}`, { method: 'DELETE' });
+            cargarCarruselesGlobales();
+            if (sesionActual.rol === 'empresa') cargarMisOfertasEmpresa();
+            if (sesionActual.rol === 'admin') { cargarVistaAdmin('ofertas'); cargarEstadisticasAdmin(); }
+        }
+
+        // ==========================================
+        // CHAT BIDIRECCIONAL (ESTUDIANTE <-> EMPRESA)
+        // ==========================================
+        async function abrirChat(idEstudiante, idEmpresa, nombreContraparte) {
+            document.getElementById('chat_id_estudiante').value = idEstudiante;
+            document.getElementById('chat_id_empresa').value = idEmpresa;
+            document.getElementById('tituloChat').textContent = `💬 Chat con ${nombreContraparte}`;
+            document.getElementById('modalChat').style.display = 'flex';
+            await refrescarMensajesChat();
+        }
+
+        async function refrescarMensajesChat() {
+            const idEst = document.getElementById('chat_id_estudiante').value;
+            const idEmp = document.getElementById('chat_id_empresa').value;
+            const res = await fetch(`/api/mensajes?id_estudiante=${idEst}&id_empresa=${idEmp}`);
+            const mensajes = await res.json();
+
+            const caja = document.getElementById('cajaMensajes');
+            if (!mensajes.length) {
+                caja.innerHTML = '<p style="color:#64748b; text-align:center; margin-top:2rem;">Todavía no hay mensajes. ¡Escribí el primero para iniciar la conversación!</p>';
+                return;
+            }
+
+            caja.innerHTML = '';
+            mensajes.forEach(m => {
+                const esMio = (sesionActual.rol === m.remitente);
+                const div = document.createElement('div');
+                div.className = `msg-burbuja ${esMio ? 'msg-mio' : 'msg-otro'}`;
+                div.innerHTML = `
+                    <div>${m.contenido}</div>
+                    <span class="msg-hora">${m.remitente === 'empresa' ? '🏢 Empresa' : '🎓 Estudiante'} • ${new Date(m.fecha_envio).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                `;
+                caja.appendChild(div);
+            });
+            caja.scrollTop = caja.scrollHeight;
+        }
+
+        document.getElementById('formEnviarMensaje').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const remitente = sesionActual.rol === 'empresa' ? 'empresa' : 'estudiante';
+            const body = {
+                id_estudiante: document.getElementById('chat_id_estudiante').value,
+                id_empresa: document.getElementById('chat_id_empresa').value,
+                remitente,
+                contenido: document.getElementById('chat_texto').value
+            };
+
+            const res = await fetch('/api/mensajes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
             });
 
             if (res.ok) {
-                cerrarModal();
-                cargarEstudiantes();
-            } else {
-                alert('Error al actualizar el perfil.');
+                document.getElementById('chat_texto').value = '';
+                await refrescarMensajesChat();
             }
         });
 
-        // Función para Eliminar
-        async function eliminarEstudiante(id, nombre) {
-            if (!confirm(`¿Estás seguro de que querés eliminar el perfil de ${nombre} y sus archivos?`)) return;
+        // ==========================================
+        // PANEL DE ADMINISTRADOR (CONTROL TOTAL)
+        // ==========================================
+        async function cargarEstadisticasAdmin() {
+            const res = await fetch('/api/estadisticas');
+            const s = await res.json();
+            document.getElementById('admStatEst').textContent = s.estudiantes;
+            document.getElementById('admStatEmp').textContent = s.empresas;
+            document.getElementById('admStatOf').textContent = s.ofertas;
+            document.getElementById('admStatPost').textContent = s.postulaciones;
+        }
 
-            const res = await fetch(`/api/estudiantes/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                cargarEstudiantes();
-            } else {
-                alert('No se pudo eliminar el estudiante.');
+        async function cargarVistaAdmin(tipo) {
+            const cont = document.getElementById('contenedorAdminPrincipal');
+            cont.innerHTML = '<p>Cargando datos...</p>';
+
+            if (tipo === 'estudiantes') {
+                const res = await fetch('/api/estudiantes');
+                const lista = await res.json();
+                cont.innerHTML = lista.length ? '' : '<p>No hay estudiantes registrados.</p>';
+                lista.forEach(est => {
+                    cont.innerHTML += `
+                        <div class="card">
+                            <div style="display:flex; align-items:center; gap:0.8rem;">
+                                <img src="${est.foto_perfil_url}" class="foto-avatar">
+                                <div>
+                                    <h3>${est.nombre_completo}</h3>
+                                    <p style="font-size:0.85rem;">🎓 ${est.carrera} (${est.institucion})</p>
+                                    <p style="font-size:0.8rem; color:#64748b;">✉️ ${est.email}</p>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:0.4rem; margin-top:auto;">
+                                <a href="${est.cv_pdf_url}" target="_blank" class="btn btn-outline" style="flex:1; text-align:center;">📄 CV</a>
+                                <a href="${est.certificado_regular_url}" target="_blank" class="btn btn-outline" style="flex:1; text-align:center;">📎 Cert.</a>
+                                <button class="btn btn-danger" onclick="adminEliminarEstudiante(${est.id_estudiante})">🗑️ Eliminar</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            if (tipo === 'empresas') {
+                const res = await fetch('/api/empresas');
+                const lista = await res.json();
+                cont.innerHTML = lista.length ? '' : '<p>No hay empresas registradas.</p>';
+                lista.forEach(emp => {
+                    cont.innerHTML += `
+                        <div class="card">
+                            <div style="display:flex; align-items:center; gap:0.8rem;">
+                                <img src="${obtenerLogoEmpresa(emp.logo_url, emp.razon_social)}" class="logo-empresa-circular" style="width:50px; height:50px;">
+                                <div>
+                                    <h3>${emp.razon_social}</h3>
+                                    <p style="font-size:0.82rem; color:#475569;">CUIT: ${emp.cuit}</p>
+                                </div>
+                            </div>
+                            <p style="font-size:0.85rem;">Rubro: ${emp.rubro || '-'} | 📍 ${emp.ubicacion || '-'}</p>
+                            <p style="font-size:0.85rem;">✉️ ${emp.email_contacto}</p>
+                            <button class="btn btn-danger" style="margin-top:auto;" onclick="adminEliminarEmpresa(${emp.id_empresa})">🗑️ Eliminar Empresa y sus Ofertas</button>
+                        </div>
+                    `;
+                });
+            }
+
+            if (tipo === 'ofertas') {
+                const res = await fetch('/api/ofertas');
+                const lista = await res.json();
+                cont.innerHTML = lista.length ? '' : '<p>No hay ofertas registradas.</p>';
+                lista.forEach(of => {
+                    const tituloLimpio = of.titulo.replace(/'/g, "\\'");
+                    cont.innerHTML += `
+                        <div class="card">
+                            <div style="display:flex; align-items:center; gap:0.7rem;">
+                                <img src="${obtenerLogoEmpresa(of.logo_url, of.razon_social)}" class="logo-empresa-circular" style="width:42px; height:42px;">
+                                <div>
+                                    <h3>${of.titulo}</h3>
+                                    <p style="font-weight:600; color:#475569; font-size:0.85rem;">🏢 ${of.razon_social}</p>
+                                </div>
+                            </div>
+                            <p style="font-size:0.85rem;">${of.descripcion}</p>
+                            <div style="display:flex; gap:0.5rem; margin-top:auto;">
+                                <button class="btn btn-primary" style="flex:1;" onclick="verCandidatosDeOferta(${of.id_oferta}, '${tituloLimpio}')">👥 Postulantes</button>
+                                <button class="btn btn-danger" onclick="eliminarOferta(${of.id_oferta})">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
             }
         }
 
-        document.addEventListener('DOMContentLoaded', cargarEstudiantes);
+        async function adminEliminarEstudiante(id) {
+            if (!confirm('¿Eliminar estudiante y todos sus archivos?')) return;
+            await fetch(`/api/estudiantes/${id}`, { method: 'DELETE' });
+            cargarVistaAdmin('estudiantes');
+            cargarEstadisticasAdmin();
+        }
+
+        async function adminEliminarEmpresa(id) {
+            if (!confirm('¿Eliminar esta empresa junto con todas sus ofertas, postulaciones y mensajes?')) return;
+
+            try {
+                const res = await fetch(`/api/empresas/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    alert('Error al eliminar: ' + (data.error || 'No se pudo completar la operación'));
+                    return;
+                }
+
+                await cargarVistaAdmin('empresas');
+                await cargarEstadisticasAdmin();
+                await cargarCarruselesGlobales();
+            } catch (err) {
+                alert('Error de conexión al intentar eliminar la empresa.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', iniciarInterfazSegunRol);
     </script>
 </body>
 </html>
